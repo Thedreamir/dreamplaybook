@@ -6,5 +6,6 @@ import { UBER } from './ch-uber';
 import { STRIPE } from './ch-stripe';
 import { DROPBOX } from './ch-dropbox';
 import { NOTION } from './ch-notion';
+import { FIGMA } from './ch-figma';
 
-export const CHAPTERS: Chapter[] = [DUOLINGO, APPLE, AIRBNB, UBER, STRIPE, DROPBOX, NOTION];
+export const CHAPTERS: Chapter[] = [DUOLINGO, APPLE, AIRBNB, UBER, STRIPE, DROPBOX, NOTION, FIGMA];
