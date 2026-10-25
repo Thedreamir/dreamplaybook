@@ -164,9 +164,8 @@ function Reader({ ch, onBack }: { ch: Chapter; onBack: () => void }) {
     const nodes: { kind: 'part' | 'chest' | 'practice' | 'dlg'; id: string; idx?: number; need?: string[]; label: string }[] = [];
     PARTS.forEach((x, i) => {
         nodes.push({ kind: 'part', id: x.id, idx: i, label: x.title });
-        if (i % 3 === 2 && i < PARTS.length - 1) nodes.push({ kind: 'chest', id: 'c' + (i + 1), need: PARTS.slice(i - 2, i + 1).map(y => y.id), label: 'Сундук ' + (i + 1) / 3 });
+        if (false && i % 3 === 2 && i < PARTS.length - 1) nodes.push({ kind: 'chest', id: 'c' + (i + 1), need: PARTS.slice(i - 2, i + 1).map(y => y.id), label: 'Сундук ' + (i + 1) / 3 });
     });
-    nodes.push({ kind: 'practice', id: 'pr', label: 'Пазлы решений' }, { kind: 'dlg', id: 'dl', label: 'Диалог: решение основателя' });
     const offs = [0, 38, 58, 38, 0, -38, -58, -38];
     const level = Math.floor(p.xp / 60) + 1;
     const fontFam = p.font === 'inter' ? 'var(--f-inter)' : p.font === 'serif' ? 'var(--f-read)' : 'var(--f-sys)';
@@ -237,7 +236,7 @@ function Reader({ ch, onBack }: { ch: Chapter; onBack: () => void }) {
                 </div>
             </section>}
 
-            {tab === 'practice' && <section className="pane fade">
+            {false && <section className="pane fade">
                 <div className="eyebrow">ПРАКТИКА</div>
                 <h2>Пазлы решений</h2>
                 <p className="hint">Как шахматные задачи: выбери ход основателя, потом смотри, что было на самом деле.</p>
@@ -270,7 +269,7 @@ function Reader({ ch, onBack }: { ch: Chapter; onBack: () => void }) {
                 </div>
             </section>}
 
-            {tab === 'buddy' && <section className="pane fade buddy">
+            {false && <section className="pane fade buddy">
                 <div className="eyebrow">БАДДИ ГЛАВЫ</div>
                 <h2>Спроси по материалу</h2>
                 <p className="hint">Прототип ищет ответ только в тексте этой главы и указывает источник. Генеративной модели здесь нет, поэтому он не выдумывает.</p>
@@ -305,7 +304,7 @@ function Reader({ ch, onBack }: { ch: Chapter; onBack: () => void }) {
         </div>
 
         <nav className="tabs" aria-label="Разделы">
-            {([['path', 'Путь', 'path'], ['read', 'Читать', 'book'], ['practice', 'Практика', 'puzzle'], ['buddy', 'Бадди', 'chat'], ['notes', 'Мысли', 'bulb']] as const).map(([k, l, ic]) =>
+            {([['path', 'Оглавление', 'path'], ['read', 'Читать', 'book'], ['notes', 'Заметки', 'bulb']] as const).map(([k, l, ic]) =>
                 <button key={k} className={tab === k ? 'on' : ''} onClick={() => setTab(k)}><Icon name={ic} /><span>{l}</span></button>)}
         </nav>
 
