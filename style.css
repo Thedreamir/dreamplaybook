@@ -394,3 +394,8 @@ button:active:not(:disabled){transform:scale(.965);filter:brightness(.94)}
 .toc li.cur .toc-n{color:#b8771a;text-shadow:none}
 .toc li.done .toc-t b{opacity:.65}
 .toc button:hover{background:rgba(160,122,58,.12)}
+.tabs button{color:#d9c8a4!important}
+.tabs button span{color:#d9c8a4!important;font-weight:600;letter-spacing:.02em}
+.tabs svg{color:#e6c27a;stroke-width:1.4}
+.tabs button.on span{color:#f6d68f!important}
+.tabs button:not(.on) svg{opacity:.8}

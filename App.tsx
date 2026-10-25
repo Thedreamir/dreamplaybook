@@ -40,6 +40,9 @@ function Icon({ name }: { name: string }) {
         share: <path d="M12 15V4M8 8l4-4 4 4M5 13v7h14v-7" {...c} />,
         copy: <><rect x="8" y="8" width="12" height="12" rx="2" {...c} /><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3" {...c} /></>,
         star: <path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z" {...c} />,
+        toc: <><path d="M4 6h2M4 12h2M4 18h2" {...c} strokeWidth={2} /><path d="M9 6h11M9 12h11M9 18h8" {...c} /></>,
+        open: <><path d="M12 6.5C10 5 7 4.5 3.5 5v13c3.5-.5 6.5 0 8.5 1.5 2-1.500 5-2 8.5-1.5V5C17 4.500 14 5 12 6.500z" {...c} /><path d="M12 6.500v13" {...c} /></>,
+        quill: <><path d="M20 4c-7 0-12 4-13 11l-2 5 5-2c7-1 10-6 10-14z" {...c} /><path d="M7 17c2-4 5-7 9-9" {...c} /></>,
         send: <path d="M4 12l16-8-6 16-3-6z" {...c} />,
     };
     return <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">{paths[name] ?? paths.target}</svg>;
@@ -304,7 +307,7 @@ function Reader({ ch: chRu, onBack }: { ch: Chapter; onBack: () => void }) {
         </div>
 
         <nav className="tabs" aria-label="Разделы">
-            {([['path', t('Оглавление','Contents'), 'path'], ['read', t('Читать','Read'), 'book'], ['notes', t('Заметки','Notes'), 'bulb']] as const).map(([k, l, ic]) =>
+            {([['path', t('Оглавление','Contents'), 'toc'], ['read', t('Читать','Read'), 'open'], ['notes', t('Заметки','Notes'), 'quill']] as const).map(([k, l, ic]) =>
                 <button key={k} className={tab === k ? 'on' : ''} onClick={() => setTab(k)}><Icon name={ic} /><span>{l}</span></button>)}
         </nav>
 
