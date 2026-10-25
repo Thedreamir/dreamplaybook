@@ -399,3 +399,14 @@ button:active:not(:disabled){transform:scale(.965);filter:brightness(.94)}
 .tabs svg{color:#e6c27a;stroke-width:1.4}
 .tabs button.on span{color:#f6d68f!important}
 .tabs button:not(.on) svg{opacity:.8}
+/* real page curl: folded corner grows from bottom-right */
+.reader.turn-out-next,.reader.turn-in-next,.reader.turn-out-prev,.reader.turn-in-prev{animation:none!important;transform:none}
+.reader .curl{position:fixed;right:calc(50% - min(195px,50vw) + 8px);bottom:84px;width:0;height:0;z-index:50;pointer-events:none}
+.curl i{position:absolute;right:0;bottom:0;display:block;width:var(--cs,0px);height:var(--cs,0px);transform-origin:100% 100%;
+ background:linear-gradient(135deg,#fffdf6 0%,#f1e6cc 45%,#cdb98c 100%);
+ border-radius:0 0 0 100%;box-shadow:-10px -10px 22px rgba(0,0,0,.38),-2px -2px 6px rgba(0,0,0,.25)}
+.curl.out-next i,.curl.out-prev i{animation:curlGrow .48s cubic-bezier(.5,.05,.6,.4) forwards}
+.curl.in-next i,.curl.in-prev i{animation:curlGrow .52s cubic-bezier(.3,.6,.4,1) reverse both}
+@keyframes curlGrow{0%{width:0;height:0}100%{width:min(380px,96vw);height:min(760px,78vh)}}
+.curl.out-prev i,.curl.in-prev i{transform:scaleX(-1);right:auto;left:0}
+.reader.turn-out-next>*:not(.curl),.reader.turn-out-prev>*:not(.curl){transition:opacity .45s;opacity:.55}
