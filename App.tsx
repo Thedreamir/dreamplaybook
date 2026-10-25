@@ -88,6 +88,8 @@ function BlockView({ b, id, hl, toggle, onSrc }: { b: Block; id: string; hl: boo
     if (b.t === 'p') return <p className={'para' + (hl ? ' is-hl' : '')} onClick={toggle} data-id={id}><Rich text={b.text} /> <Sup src={b.src} onSrc={onSrc} /></p>;
     if (b.t === 'fact') return <div className={'fact glass' + (hl ? ' is-hl' : '')} onClick={toggle}><span className="fact-l">{b.label}</span><span className="fact-v">{b.value} <Sup src={b.src} onSrc={onSrc} /></span></div>;
     if (b.t === 'gap') return <div className="gap"><b>Не нашёл.</b> {b.text.replace(/^Не нашёл: /, '')}</div>;
+    if (b.t === 'img') return <figure className="fig"><img src={b.file} alt={b.alt} loading="lazy" /><figcaption>{b.caption} <a href={b.url || '#'} target="_blank" rel="noreferrer">{b.credit}</a></figcaption></figure>;
+    if (b.t === 'video') return <a className="vid" href={b.url} target="_blank" rel="noreferrer"><span className="vid-ic">▶</span><span><b>{b.title}</b><small>{b.note}</small></span></a>;
     if (b.t === 'warn') return <div className="warn glass"><div className="warn-t">{b.title}</div><p>{b.text} <Sup src={b.src} onSrc={onSrc} /></p></div>;
     if (b.t === 'ladder') return <div className="ladder glass"><div className="mx-l">ЛЕСТНИЦА АБСТРАКЦИИ</div><div className="mx-t">{b.title}</div>{b.steps.map((s, i) => <div className="rung" key={i} style={{ marginLeft: i * 10 }}><i>{i + 1}</i><span>{s}</span></div>)}</div>;
     return <div className="mx glass"><div className="mx-head"><span className="mx-ic"><Icon name={b.icon} /></span><div><div className="mx-l">{b.label}</div><div className="mx-t">{b.title}</div></div></div>{b.rows.map((r, i) => <div className="mx-row" key={i}><div className="mx-k">{r.k}</div><div className="mx-v">{r.v}</div></div>)}{b.src ? <Sup src={b.src} onSrc={onSrc} /> : null}</div>;
@@ -359,3 +361,4 @@ export function App() {
         </section></div>
     </div>;
 }
+
