@@ -328,3 +328,15 @@ mark.kw{background:rgba(var(--acc-rgb),.16)}
 .bar-k { color: #6b5b3d; } .bar-v { font-weight: 700; text-align: right; }
 .bar-tr { height: 12px; background: rgba(80,55,20,.12); border-radius: 6px; overflow: hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,.25); } .bar-tr i { display: block; height: 100%; background: linear-gradient(180deg, #7aa7e8, #2f6ccc); border-radius: 6px; }
 .chart figcaption { font-size: 11.5px; color: #6b5b3d; margin-top: 8px; font-family: var(--f-inter); }
+.langbtn{margin-left:auto;border:1px solid rgba(0,0,0,.35);border-radius:6px;padding:3px 10px;font:700 12px var(--f-sys);color:#fff;background:linear-gradient(#6f7f95,#3f4c61);box-shadow:inset 0 1px 0 rgba(255,255,255,.35);cursor:pointer}
+.brand{display:flex;align-items:center}
+.toc{list-style:none;margin:18px 4px 8px;padding:0;border-top:1px solid rgba(120,90,50,.45)}
+.toc li{border-bottom:1px solid rgba(120,90,50,.28)}
+.toc button{display:flex;align-items:baseline;gap:16px;width:100%;padding:18px 6px;background:none;border:0;text-align:left;cursor:pointer;color:inherit}
+.toc-n{flex:0 0 44px;font:italic 400 26px var(--f-read,Georgia,serif);color:#a07a3a;letter-spacing:.02em}
+.toc-t{flex:1;display:flex;flex-direction:column;gap:3px}
+.toc-t b{font:600 18px/1.25 var(--f-read,Georgia,serif);letter-spacing:.005em}
+.toc-t small{font:500 11px var(--f-sys);letter-spacing:.14em;text-transform:uppercase;opacity:.6}
+.toc-m{flex:0 0 18px;color:#a07a3a;font-size:15px}
+.toc li.cur .toc-n{color:#d9a441;text-shadow:0 0 12px rgba(217,164,65,.45)}
+.toc li.done .toc-t b{opacity:.7}

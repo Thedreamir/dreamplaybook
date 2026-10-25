@@ -3,6 +3,8 @@ import { useLocalState } from './storage';
 import './style.css';
 import { CHAPTERS } from './books';
 import type { Block, Chapter } from './types';
+import { useLang, setLang, EN } from './i18n';
+const L = (l: string, ru: string, en: string) => (l === 'en' ? en : ru);
 
 type Prog = {
     done: string[]; xp: number; streak: number; last: string; hl: string[]; chests: string[];
@@ -10,6 +12,7 @@ type Prog = {
     theme: string; font: string; size: number; bright: number;
 };
 const INIT: Prog = { done: [], xp: 0, streak: 0, last: '', hl: [], chests: [], pz: {}, dlg: [], theme: 'oled', font: 'serif', size: 18, bright: 100 };
+const ROMAN = ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
 const today = () => new Date().toISOString().slice(0, 10);
 const yesterday = () => new Date(Date.now() - 86400000).toISOString().slice(0, 10);
 
@@ -97,7 +100,11 @@ function BlockView({ b, id, hl, toggle, onSrc }: { b: Block; id: string; hl: boo
     return <div className="mx glass"><div className="mx-head"><span className="mx-ic"><Icon name={b.icon} /></span><div><div className="mx-l">{b.label}</div><div className="mx-t">{b.title}</div></div></div>{b.rows.map((r, i) => <div className="mx-row" key={i}><div className="mx-k">{r.k}</div><div className="mx-v">{r.v}</div></div>)}{b.src ? <Sup src={b.src} onSrc={onSrc} /> : null}</div>;
 }
 
-function Reader({ ch, onBack }: { ch: Chapter; onBack: () => void }) {
+function Reader({ ch: chRu, onBack }: { ch: Chapter; onBack: () => void }) {
+    const lang = useLang();
+    const hasEn = !!EN[chRu.id];
+    const ch = lang === 'en' && hasEn ? EN[chRu.id] : chRu;
+    const t = (ru: string, en: string) => L(lang, ru, en);
     const { parts: PARTS, puzzles: PUZZLES, dialogue: DIALOGUE, sources: SOURCES, tips: BUDDY_TIPS } = ch;
     const CHUNKS = useMemo(() => chunksOf(PARTS), [PARTS]);
     const [p, setP, saved] = useLocalState<Prog>(ch.id === 'duolingo' ? 'duo-ref.v1' : 'pb.' + ch.id + '.v1', INIT);
@@ -176,9 +183,9 @@ function Reader({ ch, onBack }: { ch: Chapter; onBack: () => void }) {
 
     return <div className="app" data-theme={p.theme} data-acc={accOf(ch.id)}>
         <header className="top">
-            <div className="brand"><button className="ghost back" onClick={onBack} aria-label="Все главы">‹</button><span className="dot" />DreamPlaybook<small>глава {ch.no}</small></div>
+            <div className="brand"><button className="ghost back" onClick={onBack} aria-label="All chapters">‹</button><span className="dot" />DreamPlaybook<small>{t('глава','chapter')} {ch.no}</small></div>
             <div className="stats">
-                <button className="icon-btn" onClick={() => setSheet('settings')} aria-label="Настройки чтения"><Icon name="gear" /></button>
+                <button className="icon-btn" onClick={() => setSheet('settings')} aria-label={t('Настройки чтения','Reading settings')}><Icon name="gear" /></button>
             </div>
         </header>
         <div className="scroller" ref={scroller}>
@@ -188,50 +195,40 @@ function Reader({ ch, onBack }: { ch: Chapter; onBack: () => void }) {
                     <h1>{ch.title}</h1>
                     <p className="sub">{ch.sub}</p>
                     <div className="bar"><i style={{ width: (doneN / total * 100) + '%' }} /></div>
-                    <div className="bar-l">Прочитано частей: {doneN} из {total}</div>
-                    <button className="cta" onClick={() => { setPart(Math.max(current, 0)); setTab('read'); }}>{doneN === 0 ? 'Начать' : doneN === total ? 'Перечитать' : 'Продолжить'}</button>
-                    <button className="linkbtn" onClick={() => setSheet('sources')}>Источники главы ({SOURCES.length})</button>
+                    <div className="bar-l">{t('Прочитано частей','Parts read')}: {doneN} {t('из','of')} {total}</div>
+                    <button className="cta" onClick={() => { setPart(Math.max(current, 0)); setTab('read'); }}>{doneN === 0 ? t('Начать','Start') : doneN === total ? t('Перечитать','Read again') : t('Продолжить','Continue')}</button>
+                    <button className="linkbtn" onClick={() => setSheet('sources')}>{t('Источники главы','Chapter sources')} ({SOURCES.length})</button>
                 </div>
-                <div className="skillpath">
-                    {nodes.map((n, i) => {
-                        const off = offs[i % offs.length];
-                        const done = n.kind === 'part' ? p.done.includes(n.id) : n.kind === 'chest' ? p.chests.includes(n.id) : n.kind === 'practice' ? PUZZLES.every(z => p.pz[z.id] !== undefined) : p.dlg.includes('done');
-                        const isCur = n.kind === 'part' && n.idx === current;
-                        const act = () => {
-                            if (n.kind === 'part') { setPart(n.idx!); setTab('read'); }
-                            else if (n.kind === 'chest') openChest(n.id, n.need!);
-                            else if (n.kind === 'practice') setTab('practice');
-                            else { setTab('practice'); setTimeout(() => document.getElementById('dialogue')?.scrollIntoView({ behavior: 'smooth' }), 80); }
-                        };
-                        return <div className="pnode" key={n.id} style={{ transform: 'translateX(' + off + 'px)' }}>
-                            <button className={'orb ' + n.kind + (done ? ' done' : '') + (isCur ? ' cur' : '')} onClick={act} aria-label={n.label}>
-                                <Icon name={done ? 'check' : n.kind === 'chest' ? 'chest' : n.kind === 'practice' ? 'puzzle' : n.kind === 'dlg' ? 'chat' : 'book'} />
-                            </button>
-                            <div className="plabel">{n.label}</div>
-                        </div>;
-                    })}
-                </div>
+                <ol className="toc">
+                    {PARTS.map((x, i) => <li key={x.id} className={(p.done.includes(x.id) ? 'done ' : '') + (i === current ? 'cur' : '')}>
+                        <button onClick={() => { setPart(i); setTab('read'); }}>
+                            <span className="toc-n">{ROMAN[i] ?? i + 1}</span>
+                            <span className="toc-t"><b>{x.title}</b><small>{x.kicker}</small></span>
+                            <span className="toc-m">{p.done.includes(x.id) ? '✓' : ''}</span>
+                        </button>
+                    </li>)}
+                </ol>
                 <div className="blessed">Blessed by &lt;O&gt;</div>
             </section>}
 
             {tab === 'read' && <section className="pane fade reader" style={readStyle}>
                 <div className="r-top">
-                    <button className="ghost" onClick={() => setTab('path')}>← Путь</button>
+                    <button className="ghost" onClick={() => setTab('path')}>{t('← Оглавление','← Contents')}</button>
                     <div className="seg">
-                        <button className={!speaking ? 'on' : ''} onClick={() => { if (speaking) { window.speechSynthesis.cancel(); setSpeaking(false); } }}>Читать</button>
-                        <button className={speaking ? 'on' : ''} onClick={() => speak(pt.blocks.map(b => b.t === 'p' ? b.text : b.t === 'fact' ? b.label + '. ' + b.value : '').filter(Boolean).join(' '))}><Icon name={speaking ? 'stop' : 'play'} />Слушать</button>
+                        <button className={!speaking ? 'on' : ''} onClick={() => { if (speaking) { window.speechSynthesis.cancel(); setSpeaking(false); } }}>{t('Читать','Read')}</button>
+                        <button className={speaking ? 'on' : ''} onClick={() => speak(pt.blocks.map(b => b.t === 'p' ? b.text : b.t === 'fact' ? b.label + '. ' + b.value : '').filter(Boolean).join(' '))}><Icon name={speaking ? 'stop' : 'play'} />{t('Слушать','Listen')}</button>
                     </div>
                 </div>
-                <div className="eyebrow">ЧАСТЬ {pt.n} · {pt.kicker.toUpperCase()}</div>
+                <div className="eyebrow">{t('ЧАСТЬ','PART')} {pt.n} · {pt.kicker.toUpperCase()}</div>
                 <h2>{pt.title}</h2>
-                <p className="hint">Нажми на абзац, чтобы сохранить мысль.</p>
+                <p className="hint">{t('Нажми на абзац, чтобы сохранить мысль.','Tap a paragraph to save it.')}</p>
                 {pt.blocks.map((b, i) => <BlockView key={pt.id + i} b={b} id={pt.id + '-' + i} hl={p.hl.includes(pt.id + '-' + i)} toggle={() => toggleHl(pt.id + '-' + i)} onSrc={() => setSheet('sources')} />)}
                 <div className="r-nav">
-                    <button className="linkbtn" onClick={() => setSheet('sources')}>Источники главы</button>
-                    <button className="cta" onClick={() => finish(pt)}>{p.done.includes(pt.id) ? 'Часть прочитана' : 'Отметить прочитанным'}</button>
+                    <button className="linkbtn" onClick={() => setSheet('sources')}>{t('Источники главы','Chapter sources')}</button>
+                    <button className="cta" onClick={() => finish(pt)}>{p.done.includes(pt.id) ? t('Часть прочитана','Part read') : t('Отметить прочитанным','Mark as read')}</button>
                     <div className="two">
-                        <button className="ghost" disabled={part === 0} onClick={() => setPart(part - 1)}>← Назад</button>
-                        <button className="ghost" disabled={part === total - 1} onClick={() => setPart(part + 1)}>Дальше →</button>
+                        <button className="ghost" disabled={part === 0} onClick={() => setPart(part - 1)}>{t('← Назад','← Back')}</button>
+                        <button className="ghost" disabled={part === total - 1} onClick={() => setPart(part + 1)}>{t('Дальше →','Next →')}</button>
                     </div>
                 </div>
             </section>}
@@ -278,15 +275,15 @@ function Reader({ ch, onBack }: { ch: Chapter; onBack: () => void }) {
                 </div>
                 <div className="tips">{BUDDY_TIPS.map(t => <button key={t} className="tip" onClick={() => ask(t)}>{t}</button>)}</div>
                 <form className="ask" onSubmit={e => { e.preventDefault(); ask(q); }}>
-                    <input value={q} onChange={e => setQ(e.target.value)} placeholder="Вопрос по главе" aria-label="Вопрос" />
+                    <input value={q} onChange={e => setQ(e.target.value)} placeholder={t("Вопрос по главе","Question about the chapter")} aria-label="Вопрос" />
                     <button className="send" aria-label="Отправить"><Icon name="send" /></button>
                 </form>
             </section>}
 
             {tab === 'notes' && <section className="pane fade">
-                <div className="eyebrow">МОИ МЫСЛИ</div>
-                <h2>Сохранённое</h2>
-                {p.hl.length === 0 && <p className="hint">Пока пусто. В читалке нажми на абзац или карточку, чтобы сохранить.</p>}
+                <div className="eyebrow">{t('МОИ ЗАМЕТКИ','MY NOTES')}</div>
+                <h2>{t('Сохранённое','Saved')}</h2>
+                {p.hl.length === 0 && <p className="hint">{t('Пока пусто. В читалке нажми на абзац или карточку, чтобы сохранить.','Nothing yet. Tap a paragraph or card in the reader to save it.')}</p>}
                 {p.hl.map(id => {
                     const [pid, bi] = id.split('-'); const part_ = PARTS.find(x => x.id === pid); const b = part_?.blocks[Number(bi)]; if (!b) return null;
                     const text = b.t === 'p' ? b.text : b.t === 'fact' ? b.label + ': ' + b.value : '';
@@ -295,8 +292,8 @@ function Reader({ ch, onBack }: { ch: Chapter; onBack: () => void }) {
                         <div className="n-t">«{text}»</div>
                         <div className="n-f">DreamPlaybook · {ch.company} · {part_?.title}</div>
                         <div className="two">
-                            <button className="ghost" onClick={() => { void navigator.clipboard?.writeText('«' + text + '»\nDreamPlaybook, ' + ch.company); setToast('Скопировано'); }}><Icon name="copy" />Копировать</button>
-                            <button className="ghost" onClick={() => toggleHl(id)}>Убрать</button>
+                            <button className="ghost" onClick={() => { void navigator.clipboard?.writeText('«' + text + '»\nDreamPlaybook, ' + ch.company); setToast('Скопировано'); }}><Icon name="copy" />{t('Копировать','Copy')}</button>
+                            <button className="ghost" onClick={() => toggleHl(id)}>{t('Убрать','Remove')}</button>
                         </div>
                     </div>;
                 })}
@@ -304,7 +301,7 @@ function Reader({ ch, onBack }: { ch: Chapter; onBack: () => void }) {
         </div>
 
         <nav className="tabs" aria-label="Разделы">
-            {([['path', 'Оглавление', 'path'], ['read', 'Читать', 'book'], ['notes', 'Заметки', 'bulb']] as const).map(([k, l, ic]) =>
+            {([['path', t('Оглавление','Contents'), 'path'], ['read', t('Читать','Read'), 'book'], ['notes', t('Заметки','Notes'), 'bulb']] as const).map(([k, l, ic]) =>
                 <button key={k} className={tab === k ? 'on' : ''} onClick={() => setTab(k)}><Icon name={ic} /><span>{l}</span></button>)}
         </nav>
 
@@ -314,19 +311,22 @@ function Reader({ ch, onBack }: { ch: Chapter; onBack: () => void }) {
         {sheet && <div className="scrim" onClick={() => setSheet('')}>
             <div className="sheet glass" onClick={e => e.stopPropagation()}>
                 {sheet === 'settings' ? <>
-                    <div className="sheet-t">Настройки чтения</div>
-                    <div className="set-l">Тема</div>
-                    <div className="seg wide">{[['oled', 'Индиго'], ['graphite', 'Серый'], ['sepia', 'Сепия'], ['light', 'Фарфор']].map(([k, l]) => <button key={k} className={p.theme === k ? 'on' : ''} onClick={() => upd(x => ({ ...x, theme: k }))}>{l}</button>)}</div>
-                    <div className="set-l">Шрифт</div>
-                    <div className="seg wide">{[['serif', 'Literata'], ['inter', 'Inter'], ['sys', 'Системный']].map(([k, l]) => <button key={k} className={p.font === k ? 'on' : ''} onClick={() => upd(x => ({ ...x, font: k }))}>{l}</button>)}</div>
-                    <div className="set-l">Размер текста: {p.size}</div>
+                    <div className="sheet-t">{t('Настройки чтения','Reading settings')}</div>
+                    <div className="set-l">{t('Язык','Language')}</div>
+                    <div className="seg wide">{(['ru','en'] as const).map(k => <button key={k} className={lang === k ? 'on' : ''} onClick={() => setLang(k)}>{k === 'ru' ? 'Русский' : 'English'}</button>)}</div>
+                    {lang === 'en' && !hasEn && <p className="hint">English text for this chapter is coming soon. Showing the Russian original.</p>}
+                    <div className="set-l">{t('Тема','Theme')}</div>
+                    <div className="seg wide">{[['oled', t('Индиго','Indigo')], ['graphite', t('Серый','Graphite')], ['sepia', 'Sepia'], ['light', t('Фарфор','Porcelain')]].map(([k, l]) => <button key={k} className={p.theme === k ? 'on' : ''} onClick={() => upd(x => ({ ...x, theme: k }))}>{l}</button>)}</div>
+                    <div className="set-l">{t('Шрифт','Font')}</div>
+                    <div className="seg wide">{[['serif', 'Literata'], ['inter', 'Inter'], ['sys', t('Системный','System')]].map(([k, l]) => <button key={k} className={p.font === k ? 'on' : ''} onClick={() => upd(x => ({ ...x, font: k }))}>{l}</button>)}</div>
+                    <div className="set-l">{t('Размер текста','Text size')}: {p.size}</div>
                     <input type="range" min={14} max={24} value={p.size} onChange={e => upd(x => ({ ...x, size: Number(e.target.value) }))} />
-                    <div className="set-l">Яркость: {p.bright}%</div>
+                    <div className="set-l">{t('Яркость','Brightness')}: {p.bright}%</div>
                     <input type="range" min={50} max={110} value={p.bright} onChange={e => upd(x => ({ ...x, bright: Number(e.target.value) }))} />
                     <div className="note-s">{saved.message}</div>
-                    <button className="cta" onClick={() => setSheet('')}>Готово</button>
+                    <button className="cta" onClick={() => setSheet('')}>{t('Готово','Done')}</button>
                 </> : <>
-                    <div className="sheet-t">Источники главы</div>
+                    <div className="sheet-t">{t('Источники главы','Chapter sources')}</div>
                     <div className="src-list">{SOURCES.map(s => <div className="src" key={s.id}><b>{s.id}</b><div><a href={s.url} target="_blank" rel="noopener noreferrer">{s.title}</a><small>{s.kind}</small></div></div>)}</div>
                     <button className="cta" onClick={() => setSheet('')}>Закрыть</button>
                 </>}
@@ -336,25 +336,27 @@ function Reader({ ch, onBack }: { ch: Chapter; onBack: () => void }) {
 }
 
 export function App() {
+    const lang = useLang();
+    const t = (ru: string, en: string) => L(lang, ru, en);
     const [open, setOpen] = useState<string | null>(() => { try { return localStorage.getItem('pb.open'); } catch { return null; } });
     const go = (id: string | null) => { setOpen(id); try { id ? localStorage.setItem('pb.open', id) : localStorage.removeItem('pb.open'); } catch {} };
     const ch = CHAPTERS.find(c => c.id === open);
     if (ch) return <Reader key={ch.id} ch={ch} onBack={() => go(null)} />;
     return <div className="app" data-theme={(() => { try { return localStorage.getItem('pb.theme') || 'oled'; } catch { return 'oled'; } })()} data-acc="0">
-        <header className="top"><div className="brand"><span className="dot" />DreamPlaybook<small>том 1</small></div></header>
+        <header className="top"><div className="brand"><span className="dot" />DreamPlaybook<small>{t('том 1','volume 1')}</small><button className="langbtn" onClick={() => setLang(lang === 'ru' ? 'en' : 'ru')}>{lang === 'ru' ? 'EN' : 'RU'}</button></div></header>
         <div className="scroller"><section className="pane fade">
             <div className="hero glass">
-                <div className="eyebrow">ТОМ 1 · КАК РОЖДАЮТСЯ ИМПЕРИИ</div>
-                <h1>Истории основателей от первых принципов</h1>
+                <div className="eyebrow">{t('ТОМ 1 · КАК РОЖДАЮТСЯ ИМПЕРИИ','VOLUME 1 · HOW EMPIRES ARE BORN')}</div>
+                <h1>{t('Истории основателей от первых принципов','Founder stories from first principles')}</h1>
                 <p className="sub">Каждая глава: рождение идеи, боль, первые пользователи, деньги, рост. Только факты с источниками, а где данных нет, так и написано.</p>
-                <div className="bar-l">Глав готово: {CHAPTERS.length} из 24</div>
+                <div className="bar-l">{t('Глав готово','Chapters ready')}: {CHAPTERS.length} {t('из','of')} 26</div>
             </div>
             <div className="shelf">
-                {CHAPTERS.map(c => <button key={c.id} className="book glass" onClick={() => go(c.id)}>
+                {CHAPTERS.map(c0 => { const c = lang === 'en' && EN[c0.id] ? EN[c0.id] : c0; return <button key={c.id} className="book glass" onClick={() => go(c.id)}>
                     <span className="book-no">{c.no}</span>
                     <span className="book-b"><b>{c.company}</b><small>{c.sub}</small></span>
                     <span className="book-y">{c.year}</span>
-                </button>)}
+                </button>; })}
             </div>
             <div className="blessed">Blessed by &lt;O&gt;</div>
         </section></div>
