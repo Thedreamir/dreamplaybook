@@ -89,6 +89,7 @@ function BlockView({ b, id, hl, toggle, onSrc }: { b: Block; id: string; hl: boo
     if (b.t === 'fact') return <div className={'fact glass' + (hl ? ' is-hl' : '')} onClick={toggle}><span className="fact-l">{b.label}</span><span className="fact-v">{b.value} <Sup src={b.src} onSrc={onSrc} /></span></div>;
     if (b.t === 'gap') return <div className="gap"><b>Не нашёл.</b> {b.text.replace(/^Не нашёл: /, '')}</div>;
     if (b.t === 'img') return <figure className="fig"><img src={b.file} alt={b.alt} loading="lazy" /><figcaption>{b.caption} <a href={b.url || '#'} target="_blank" rel="noreferrer">{b.credit}</a></figcaption></figure>;
+    if (b.t === 'stickers') return <div className="stickers">{b.items.map((s, i) => <div key={i} className={'sticker t' + (i % 4)}><div><b>{s.big}</b><small>{s.small}</small></div></div>)}</div>;
     if (b.t === 'video') return <a className="vid" href={b.url} target="_blank" rel="noreferrer"><span className="vid-ic">▶</span><span><b>{b.title}</b><small>{b.note}</small></span></a>;
     if (b.t === 'warn') return <div className="warn glass"><div className="warn-t">{b.title}</div><p>{b.text} <Sup src={b.src} onSrc={onSrc} /></p></div>;
     if (b.t === 'ladder') return <div className="ladder glass"><div className="mx-l">ЛЕСТНИЦА АБСТРАКЦИИ</div><div className="mx-t">{b.title}</div>{b.steps.map((s, i) => <div className="rung" key={i} style={{ marginLeft: i * 10 }}><i>{i + 1}</i><span>{s}</span></div>)}</div>;

@@ -6,6 +6,7 @@ export type Block =
     | { t: 'card'; icon: string; title: string; label: string; rows: { k: string; v: string }[]; src?: string[] }
     | { t: 'ladder'; title: string; steps: string[] }
     | { t: 'img'; file: string; alt: string; caption: string; credit: string; url?: string }
+    | { t: 'stickers'; items: { big: string; small: string }[] }
     | { t: 'video'; title: string; note: string; url: string }
     | { t: 'warn'; title: string; text: string; src?: string[] };
 export type Part = { id: string; n: string; title: string; kicker: string; xp: number; blocks: Block[] };
