@@ -120,6 +120,8 @@ function Reader({ ch: chRu, onBack }: { ch: Chapter; onBack: () => void }) {
     const [dpick, setDpick] = useState<number | null>(null);
     const scroller = useRef<HTMLDivElement>(null);
 
+    const [turning, setTurning] = useState<'' | 'out-next' | 'in-next' | 'out-prev' | 'in-prev'>('');
+    const turn = (n: number) => { if (turning || n < 0 || n >= total || n === part) return; const d = n > part ? 'next' : 'prev'; setTurning(('out-' + d) as 'out-next'); setTimeout(() => { setPart(n); setTurning(('in-' + d) as 'in-next'); setTimeout(() => setTurning(''), 520); }, 480); };
     const upd = (f: (x: Prog) => Prog) => { if (saved.ready) setP(f(p)); };
     useEffect(() => { document.documentElement.setAttribute('data-theme', p.theme); try { localStorage.setItem('pb.theme', p.theme); } catch {} }, [p.theme]);
     useEffect(() => { scroller.current?.scrollTo({ top: 0 }); }, [tab, part]);
@@ -211,7 +213,7 @@ function Reader({ ch: chRu, onBack }: { ch: Chapter; onBack: () => void }) {
                 <div className="blessed">Blessed by &lt;O&gt;</div>
             </section>}
 
-            {tab === 'read' && <section className="pane fade reader" style={readStyle}>
+            {tab === 'read' && <section className={'pane fade reader ' + (turning ? 'turn-' + turning : '')} style={readStyle}>
                 <div className="r-top">
                     <button className="ghost" onClick={() => setTab('path')}>{t('← Оглавление','← Contents')}</button>
                     <div className="seg">
@@ -228,8 +230,8 @@ function Reader({ ch: chRu, onBack }: { ch: Chapter; onBack: () => void }) {
                     <button className="linkbtn" onClick={() => setSheet('sources')}>{t('Источники главы','Chapter sources')}</button>
                     <button className="cta" onClick={() => finish(pt)}>{p.done.includes(pt.id) ? t('Часть прочитана','Part read') : t('Отметить прочитанным','Mark as read')}</button>
                     <div className="two">
-                        <button className="ghost" disabled={part === 0} onClick={() => setPart(part - 1)}>{t('← Назад','← Back')}</button>
-                        <button className="ghost" disabled={part === total - 1} onClick={() => setPart(part + 1)}>{t('Дальше →','Next →')}</button>
+                        <button className="ghost" disabled={part === 0} onClick={() => turn(part - 1)}>{t('← Назад','← Back')}</button>
+                        <button className="ghost" disabled={part === total - 1} onClick={() => turn(part + 1)}>{t('Дальше →','Next →')}</button>
                     </div>
                 </div>
             </section>}
