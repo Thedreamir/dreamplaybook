@@ -384,3 +384,13 @@ button:active:not(:disabled){transform:scale(.965);filter:brightness(.94)}
 .era-line b{transition:height .6s cubic-bezier(.2,.7,.3,1)}
 .hero{animation:rise .7s cubic-bezier(.2,.7,.3,1) both}
 @media (prefers-reduced-motion:reduce){.reader,.reader *,.hero{animation:none!important}}
+.toc{background:linear-gradient(180deg,#f7eed9,#efe2c3);border:1px solid #7a5a2c;border-radius:6px;padding:4px 14px;margin:18px 0 12px;box-shadow:0 2px 0 rgba(255,255,255,.25) inset,0 6px 16px rgba(0,0,0,.55)}
+.toc li{border-bottom:1px solid rgba(110,75,30,.3)}
+.toc li:last-child{border-bottom:0}
+.toc button,.toc-t b{color:#2a1c0c!important}
+.toc-t b{font-weight:700;font-size:18.5px}
+.toc-t small{color:#6b5030;opacity:1;font-weight:600}
+.toc-n{color:#8a5a1f;font-weight:600}
+.toc li.cur .toc-n{color:#b8771a;text-shadow:none}
+.toc li.done .toc-t b{opacity:.65}
+.toc button:hover{background:rgba(160,122,58,.12)}
