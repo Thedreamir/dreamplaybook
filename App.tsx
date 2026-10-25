@@ -131,7 +131,7 @@ function Reader({ ch, onBack }: { ch: Chapter; onBack: () => void }) {
     const finish = (pt: typeof PARTS[number]) => {
         if (p.done.includes(pt.id)) { setToast('Урок уже пройден'); return; }
         upd(x => touchStreak({ ...x, done: [...x.done, pt.id], xp: x.xp + pt.xp }));
-        celebrate('+' + pt.xp + ' XP');
+        celebrate('Часть прочитана');
     };
     const toggleHl = (id: string) => upd(x => ({ ...x, hl: x.hl.includes(id) ? x.hl.filter(h => h !== id) : [...x.hl, id] }));
     const speak = (text: string) => {
@@ -188,7 +188,7 @@ function Reader({ ch, onBack }: { ch: Chapter; onBack: () => void }) {
                     <h1>{ch.title}</h1>
                     <p className="sub">{ch.sub}</p>
                     <div className="bar"><i style={{ width: (doneN / total * 100) + '%' }} /></div>
-                    <div className="bar-l">{doneN} из {total} уроков · уровень {level}</div>
+                    <div className="bar-l">Прочитано частей: {doneN} из {total}</div>
                     <button className="cta" onClick={() => { setPart(Math.max(current, 0)); setTab('read'); }}>{doneN === 0 ? 'Начать' : doneN === total ? 'Перечитать' : 'Продолжить'}</button>
                     <button className="linkbtn" onClick={() => setSheet('sources')}>Источники главы ({SOURCES.length})</button>
                 </div>
@@ -228,7 +228,7 @@ function Reader({ ch, onBack }: { ch: Chapter; onBack: () => void }) {
                 {pt.blocks.map((b, i) => <BlockView key={pt.id + i} b={b} id={pt.id + '-' + i} hl={p.hl.includes(pt.id + '-' + i)} toggle={() => toggleHl(pt.id + '-' + i)} onSrc={() => setSheet('sources')} />)}
                 <div className="r-nav">
                     <button className="linkbtn" onClick={() => setSheet('sources')}>Источники главы</button>
-                    <button className="cta" onClick={() => finish(pt)}>{p.done.includes(pt.id) ? 'Урок пройден' : 'Завершить урок +' + pt.xp + ' XP'}</button>
+                    <button className="cta" onClick={() => finish(pt)}>{p.done.includes(pt.id) ? 'Часть прочитана' : 'Отметить прочитанным'}</button>
                     <div className="two">
                         <button className="ghost" disabled={part === 0} onClick={() => setPart(part - 1)}>← Назад</button>
                         <button className="ghost" disabled={part === total - 1} onClick={() => setPart(part + 1)}>Дальше →</button>
