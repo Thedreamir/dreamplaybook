@@ -1,14 +1,7 @@
-export type Source = { id: string; title: string; url: string; kind: string };
-export type Block =
-    | { t: 'p'; text: string; src?: string[] }
-    | { t: 'fact'; label: string; value: string; src?: string[] }
-    | { t: 'gap'; text: string }
-    | { t: 'card'; icon: string; title: string; label: string; rows: { k: string; v: string }[]; src?: string[] }
-    | { t: 'ladder'; title: string; steps: string[] }
-    | { t: 'warn'; title: string; text: string; src?: string[] };
-export type Part = { id: string; n: string; title: string; kicker: string; xp: number; blocks: Block[] };
+import type { Source, Part, Puzzle, DNode, Chapter } from './types';
+export type { Source, Block, Part, Puzzle, DNode, Chapter } from './types';
 
-export const SOURCES: Source[] = [
+const SOURCES: Source[] = [
     { id: 'S1', kind: 'Первичка', title: 'Duolingo, Inc. Form S-1 (2021): описание бизнеса, метрики, выручка', url: 'https://www.sec.gov/Archives/edgar/data/1562088/000162828021013065/duolingos-1.htm' },
     { id: 'S2', kind: 'Первичка', title: 'Duolingo, Inc. годовой отчёт 10-K за 2021, примечание об организации и IPO', url: 'https://www.sec.gov/Archives/edgar/data/1562088/000156208822000039/R8.htm' },
     { id: 'S3', kind: 'Пресса', title: 'TechCrunch, The Duolingo EC-1, часть 1: происхождение (3 мая 2021)', url: 'https://techcrunch.com/2021/05/03/duolingo-ec1-origin/' },
@@ -29,7 +22,7 @@ export const SOURCES: Source[] = [
     { id: 'S18', kind: 'Первичка / пресса', title: 'OpenAI: Introducing apps in ChatGPT and the Apps SDK (6 октября 2025) и TechCrunch о запуске', url: 'https://openai.com/index/introducing-apps-in-chatgpt/' },
 ];
 
-export const PARTS: Part[] = [
+const PARTS: Part[] = [
     {
         id: 'p0', n: '0', title: 'Пролог: сова и один вопрос', kicker: 'Почему этот кейс первый', xp: 20,
         blocks: [
@@ -211,8 +204,7 @@ export const PARTS: Part[] = [
     },
 ];
 
-export type Puzzle = { id: string; title: string; setup: string; options: { text: string; verdict: string }[]; best: number; fact: string; src: string[]; xp: number };
-export const PUZZLES: Puzzle[] = [
+const PUZZLES: Puzzle[] = [
     {
         id: 'pz1', title: 'Пазл 1. 2013: куда смотреть?', xp: 20, src: ['S3'],
         setup: 'Сайт приносит деньги переводами. Но 80% трафика идёт с мобильных, а в приложении переводы не работают. Ты основатель. Что делаешь?',
@@ -245,8 +237,7 @@ export const PUZZLES: Puzzle[] = [
     },
 ];
 
-export type DNode = { id: string; speaker: string; text: string; choices: { text: string; reply: string; good: boolean; next?: string }[] };
-export const DIALOGUE: DNode[] = [
+const DIALOGUE: DNode[] = [
     {
         id: 'd1', speaker: 'Инвестор (ИИ-реконструкция)',
         text: 'Аудитория растёт, а выручки нет. Через год мы пойдём на следующий раунд. Что ты скажешь совету?',
@@ -276,4 +267,12 @@ export const DIALOGUE: DNode[] = [
     },
 ];
 
-export const BUDDY_TIPS = ['Почему экосистемы побеждают утилиты?', 'Почему Duolingo бесплатный?', 'Как выросла аудитория?', 'Что такое стрик?', 'Сколько заработали на IPO?', 'Что не нашёл автор?'];
+const BUDDY_TIPS:string[] = ['Почему экосистемы побеждают утилиты?', 'Почему Duolingo бесплатный?', 'Как выросла аудитория?', 'Что такое стрик?', 'Сколько заработали на IPO?', 'Что не нашёл автор?'];
+
+export const DUOLINGO: Chapter = {
+    id: 'duolingo', no: '01', company: 'Duolingo', year: '2011',
+    title: 'Duolingo: как сова научила мир возвращаться каждый день',
+    sub: 'От бесплатного образования до империи привычки. Только факты с источниками и разбор от первых принципов.',
+    eyebrow: 'ЭТАЛОННАЯ ГЛАВА',
+    sources: SOURCES, parts: PARTS, puzzles: PUZZLES, dialogue: DIALOGUE, tips: BUDDY_TIPS,
+};

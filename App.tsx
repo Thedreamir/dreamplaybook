@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocalState } from './storage';
 import './style.css';
-import { BUDDY_TIPS, DIALOGUE, PARTS, PUZZLES, SOURCES, type Block } from './chapter';
+import { CHAPTERS } from './books';
+import type { Block, Chapter } from './types';
 
 type Prog = {
     done: string[]; xp: number; streak: number; last: string; hl: string[]; chests: string[];
@@ -46,7 +47,7 @@ const stem = (w: string) => w.toLowerCase().replace(/[^a-zа-яё0-9]/gi, '').sl
 const tokens = (s: string) => s.split(/\s+/).map(stem).filter(w => w.length > 1 && !STOP.has(w));
 
 type Chunk = { text: string; src: string[]; part: string };
-const CHUNKS: Chunk[] = PARTS.flatMap(p => p.blocks.flatMap((b): Chunk[] => {
+const chunksOf = (PARTS: Chapter['parts']): Chunk[] => PARTS.flatMap(p => p.blocks.flatMap((b): Chunk[] => {
     if (b.t === 'p') return [{ text: b.text, src: b.src ?? [], part: p.title }];
     if (b.t === 'fact') return [{ text: b.label + ': ' + b.value, src: b.src ?? [], part: p.title }];
     if (b.t === 'warn') return [{ text: b.title + '. ' + b.text, src: b.src ?? [], part: p.title }];
@@ -54,9 +55,9 @@ const CHUNKS: Chunk[] = PARTS.flatMap(p => p.blocks.flatMap((b): Chunk[] => {
     if (b.t === 'card') return [{ text: b.title + '. ' + b.rows.map(r => r.k + ': ' + r.v).join('. '), src: b.src ?? [], part: p.title }];
     return [];
 }));
-function answer(q: string): { text: string; src: string[]; part?: string } {
+function answer(CHUNKS: Chunk[], q: string): { text: string; src: string[]; part?: string } {
     const qt = tokens(q);
-    if (!qt.length) return { text: 'Задай вопрос по материалу главы. Например: почему Duolingo бесплатный?', src: [] };
+    if (!qt.length) return { text: 'Задай вопрос по материалу главы. Например: что здесь главное?', src: [] };
     const scored = CHUNKS.map(c => {
         const ct = tokens(c.text);
         const score = qt.reduce((a, t) => a + (ct.includes(t) ? 1 : 0), 0);
@@ -86,8 +87,10 @@ function BlockView({ b, id, hl, toggle, onSrc }: { b: Block; id: string; hl: boo
     return <div className="mx glass"><div className="mx-head"><span className="mx-ic"><Icon name={b.icon} /></span><div><div className="mx-l">{b.label}</div><div className="mx-t">{b.title}</div></div></div>{b.rows.map((r, i) => <div className="mx-row" key={i}><div className="mx-k">{r.k}</div><div className="mx-v">{r.v}</div></div>)}{b.src ? <Sup src={b.src} onSrc={onSrc} /> : null}</div>;
 }
 
-export function App() {
-    const [p, setP, saved] = useLocalState<Prog>('duo-ref.v1', INIT);
+function Reader({ ch, onBack }: { ch: Chapter; onBack: () => void }) {
+    const { parts: PARTS, puzzles: PUZZLES, dialogue: DIALOGUE, sources: SOURCES, tips: BUDDY_TIPS } = ch;
+    const CHUNKS = useMemo(() => chunksOf(PARTS), [PARTS]);
+    const [p, setP, saved] = useLocalState<Prog>(ch.id === 'duolingo' ? 'duo-ref.v1' : 'pb.' + ch.id + '.v1', INIT);
     const [tab, setTab] = useState<'path' | 'read' | 'practice' | 'buddy' | 'notes'>('path');
     const [part, setPart] = useState(0);
     const [sheet, setSheet] = useState<'' | 'settings' | 'sources'>('');
@@ -137,7 +140,7 @@ export function App() {
     };
     const ask = (text: string) => {
         if (!text.trim()) return;
-        const a = answer(text);
+        const a = answer(CHUNKS, text);
         setChat(c => [...c, { me: true, text }, { me: false, text: a.text, src: a.src, part: a.part }]);
         setQ('');
     };
@@ -148,14 +151,12 @@ export function App() {
         if (good) celebrate('Верно: +' + pz.xp + ' XP'); else setToast('+5 XP за попытку. Смотри разбор');
     };
 
-    const nodes: { kind: 'part' | 'chest' | 'practice' | 'dlg'; id: string; idx?: number; need?: string[]; label: string }[] = [
-        { kind: 'part', id: 'p0', idx: 0, label: PARTS[0].title }, { kind: 'part', id: 'p1', idx: 1, label: PARTS[1].title }, { kind: 'part', id: 'p2', idx: 2, label: PARTS[2].title },
-        { kind: 'chest', id: 'c1', need: ['p0', 'p1', 'p2'], label: 'Сундук 1' },
-        { kind: 'part', id: 'p3', idx: 3, label: PARTS[3].title }, { kind: 'part', id: 'p4', idx: 4, label: PARTS[4].title }, { kind: 'part', id: 'p5', idx: 5, label: PARTS[5].title },
-        { kind: 'chest', id: 'c2', need: ['p3', 'p4', 'p5'], label: 'Сундук 2' },
-        { kind: 'part', id: 'p6', idx: 6, label: PARTS[6].title }, { kind: 'part', id: 'p7', idx: 7, label: 'Закон среды' },
-        { kind: 'practice', id: 'pr', label: 'Пазлы решений' }, { kind: 'dlg', id: 'dl', label: 'Диалог: решение основателя' },
-    ];
+    const nodes: { kind: 'part' | 'chest' | 'practice' | 'dlg'; id: string; idx?: number; need?: string[]; label: string }[] = [];
+    PARTS.forEach((x, i) => {
+        nodes.push({ kind: 'part', id: x.id, idx: i, label: x.title });
+        if (i % 3 === 2 && i < PARTS.length - 1) nodes.push({ kind: 'chest', id: 'c' + (i + 1), need: PARTS.slice(i - 2, i + 1).map(y => y.id), label: 'Сундук ' + (i + 1) / 3 });
+    });
+    nodes.push({ kind: 'practice', id: 'pr', label: 'Пазлы решений' }, { kind: 'dlg', id: 'dl', label: 'Диалог: решение основателя' });
     const offs = [0, 38, 58, 38, 0, -38, -58, -38];
     const level = Math.floor(p.xp / 60) + 1;
     const fontFam = p.font === 'inter' ? 'var(--f-inter)' : p.font === 'serif' ? 'Georgia, "Times New Roman", serif' : 'var(--f-sys)';
@@ -166,7 +167,7 @@ export function App() {
 
     return <div className="app" data-theme={p.theme}>
         <header className="top">
-            <div className="brand"><span className="dot" />DreamPlaybook<small>глава 01</small></div>
+            <div className="brand"><button className="ghost back" onClick={onBack} aria-label="Все главы">‹</button><span className="dot" />DreamPlaybook<small>глава {ch.no}</small></div>
             <div className="stats">
                 <span className="stat s-streak" title="Серия дней"><Icon name="flame" /><b>{p.streak}</b></span>
                 <span className="stat s-xp" title="Опыт"><Icon name="star" /><b>{p.xp}</b></span>
@@ -176,13 +177,13 @@ export function App() {
         <div className="scroller" ref={scroller}>
             {tab === 'path' && <section className="pane fade">
                 <div className="hero glass">
-                    <div className="eyebrow">ЭТАЛОННАЯ ГЛАВА</div>
-                    <h1>Duolingo: как сова научила мир возвращаться каждый день</h1>
-                    <p className="sub">От бесплатного образования до империи привычки. Только факты с источниками и разбор от первых принципов.</p>
+                    <div className="eyebrow">{ch.eyebrow}</div>
+                    <h1>{ch.title}</h1>
+                    <p className="sub">{ch.sub}</p>
                     <div className="bar"><i style={{ width: (doneN / total * 100) + '%' }} /></div>
                     <div className="bar-l">{doneN} из {total} уроков · уровень {level}</div>
                     <button className="cta" onClick={() => { setPart(Math.max(current, 0)); setTab('read'); }}>{doneN === 0 ? 'Начать' : doneN === total ? 'Перечитать' : 'Продолжить'}</button>
-                    <button className="linkbtn" onClick={() => setSheet('sources')}>Источники главы (18)</button>
+                    <button className="linkbtn" onClick={() => setSheet('sources')}>Источники главы ({SOURCES.length})</button>
                 </div>
                 <div className="skillpath">
                     {nodes.map((n, i) => {
@@ -233,14 +234,14 @@ export function App() {
                 <h2>Пазлы решений</h2>
                 <p className="hint">Как шахматные задачи: выбери ход основателя, потом смотри, что было на самом деле.</p>
                 {PUZZLES.map(z => {
-                    const ch = p.pz[z.id];
+                    const cz = p.pz[z.id];
                     return <div className="puzzle glass" key={z.id}>
                         <div className="pz-t">{z.title}</div>
                         <p>{z.setup}</p>
-                        {z.options.map((o, i) => <button key={i} className={'opt' + (ch === i ? (i === z.best ? ' good' : ' bad') : '') + (ch !== undefined && i === z.best ? ' good' : '')} onClick={() => pick(z, i)} disabled={ch !== undefined}>
-                            <span>{o.text}</span>{ch !== undefined && (ch === i || i === z.best) ? <em>{o.verdict}</em> : null}
+                        {z.options.map((o, i) => <button key={i} className={'opt' + (cz === i ? (i === z.best ? ' good' : ' bad') : '') + (cz !== undefined && i === z.best ? ' good' : '')} onClick={() => pick(z, i)} disabled={cz !== undefined}>
+                            <span>{o.text}</span>{cz !== undefined && (cz === i || i === z.best) ? <em>{o.verdict}</em> : null}
                         </button>)}
-                        {ch !== undefined && <div className="pz-fact"><b>Что было.</b> {z.fact} <Sup src={z.src} onSrc={() => setSheet('sources')} /></div>}
+                        {cz !== undefined && <div className="pz-fact"><b>Что было.</b> {z.fact} <Sup src={z.src} onSrc={() => setSheet('sources')} /></div>}
                     </div>;
                 })}
                 <div id="dialogue" className="puzzle glass">
@@ -285,9 +286,9 @@ export function App() {
                     if (!text) return null;
                     return <div className="note glass" key={id}>
                         <div className="n-t">«{text}»</div>
-                        <div className="n-f">DreamPlaybook · Duolingo · {part_?.title}</div>
+                        <div className="n-f">DreamPlaybook · {ch.company} · {part_?.title}</div>
                         <div className="two">
-                            <button className="ghost" onClick={() => { void navigator.clipboard?.writeText('«' + text + '»\nDreamPlaybook, Duolingo'); setToast('Скопировано'); }}><Icon name="copy" />Копировать</button>
+                            <button className="ghost" onClick={() => { void navigator.clipboard?.writeText('«' + text + '»\nDreamPlaybook, ' + ch.company); setToast('Скопировано'); }}><Icon name="copy" />Копировать</button>
                             <button className="ghost" onClick={() => toggleHl(id)}>Убрать</button>
                         </div>
                     </div>;
@@ -324,5 +325,31 @@ export function App() {
                 </>}
             </div>
         </div>}
+    </div>;
+}
+
+export function App() {
+    const [open, setOpen] = useState<string | null>(() => { try { return localStorage.getItem('pb.open'); } catch { return null; } });
+    const go = (id: string | null) => { setOpen(id); try { id ? localStorage.setItem('pb.open', id) : localStorage.removeItem('pb.open'); } catch {} };
+    const ch = CHAPTERS.find(c => c.id === open);
+    if (ch) return <Reader key={ch.id} ch={ch} onBack={() => go(null)} />;
+    return <div className="app" data-theme="oled">
+        <header className="top"><div className="brand"><span className="dot" />DreamPlaybook<small>том 1</small></div></header>
+        <div className="scroller"><section className="pane fade">
+            <div className="hero glass">
+                <div className="eyebrow">ТОМ 1 · КАК РОЖДАЮТСЯ ИМПЕРИИ</div>
+                <h1>Истории основателей от первых принципов</h1>
+                <p className="sub">Каждая глава: рождение идеи, боль, первые пользователи, деньги, рост. Только факты с источниками, а где данных нет, так и написано.</p>
+                <div className="bar-l">Глав готово: {CHAPTERS.length} из 24</div>
+            </div>
+            <div className="shelf">
+                {CHAPTERS.map(c => <button key={c.id} className="book glass" onClick={() => go(c.id)}>
+                    <span className="book-no">{c.no}</span>
+                    <span className="book-b"><b>{c.company}</b><small>{c.sub}</small></span>
+                    <span className="book-y">{c.year}</span>
+                </button>)}
+            </div>
+            <div className="blessed">Blessed by &lt;O&gt;</div>
+        </section></div>
     </div>;
 }
