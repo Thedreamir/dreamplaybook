@@ -9,7 +9,7 @@ type Prog = {
     pz: Record<string, number>; dlg: string[];
     theme: string; font: string; size: number; bright: number;
 };
-const INIT: Prog = { done: [], xp: 0, streak: 0, last: '', hl: [], chests: [], pz: {}, dlg: [], theme: 'oled', font: 'inter', size: 17, bright: 100 };
+const INIT: Prog = { done: [], xp: 0, streak: 0, last: '', hl: [], chests: [], pz: {}, dlg: [], theme: 'oled', font: 'serif', size: 18, bright: 100 };
 const today = () => new Date().toISOString().slice(0, 10);
 const yesterday = () => new Date(Date.now() - 86400000).toISOString().slice(0, 10);
 
@@ -78,8 +78,14 @@ function Sup({ src, onSrc }: { src?: string[]; onSrc: () => void }) {
     return <button className="chip" onClick={e => { e.stopPropagation(); onSrc(); }} aria-label={'Источники ' + src.join(', ')}>{src.join(' ')}</button>;
 }
 
+const accOf = (id: string) => String(Math.max(0, CHAPTERS.findIndex(c => c.id === id)) % 8);
+const KW = /(\$\s?\d[\d\s.,]*(?:\s?(?:млн|млрд|тыс\.?))?|\d[\d\s.,]*\s?(?:%|млн|млрд|тыс\.|долл\.|\$)|«[^»]{2,40}»)/g;
+function Rich({ text }: { text: string }) {
+    const parts = text.split(KW);
+    return <>{parts.map((t, i) => i % 2 ? <mark key={i} className="kw">{t}</mark> : t)}</>;
+}
 function BlockView({ b, id, hl, toggle, onSrc }: { b: Block; id: string; hl: boolean; toggle: () => void; onSrc: () => void }) {
-    if (b.t === 'p') return <p className={'para' + (hl ? ' is-hl' : '')} onClick={toggle} data-id={id}>{b.text} <Sup src={b.src} onSrc={onSrc} /></p>;
+    if (b.t === 'p') return <p className={'para' + (hl ? ' is-hl' : '')} onClick={toggle} data-id={id}><Rich text={b.text} /> <Sup src={b.src} onSrc={onSrc} /></p>;
     if (b.t === 'fact') return <div className={'fact glass' + (hl ? ' is-hl' : '')} onClick={toggle}><span className="fact-l">{b.label}</span><span className="fact-v">{b.value} <Sup src={b.src} onSrc={onSrc} /></span></div>;
     if (b.t === 'gap') return <div className="gap"><b>Не нашёл.</b> {b.text.replace(/^Не нашёл: /, '')}</div>;
     if (b.t === 'warn') return <div className="warn glass"><div className="warn-t">{b.title}</div><p>{b.text} <Sup src={b.src} onSrc={onSrc} /></p></div>;
@@ -104,7 +110,7 @@ function Reader({ ch, onBack }: { ch: Chapter; onBack: () => void }) {
     const scroller = useRef<HTMLDivElement>(null);
 
     const upd = (f: (x: Prog) => Prog) => { if (saved.ready) setP(f(p)); };
-    useEffect(() => { document.documentElement.setAttribute('data-theme', p.theme); }, [p.theme]);
+    useEffect(() => { document.documentElement.setAttribute('data-theme', p.theme); try { localStorage.setItem('pb.theme', p.theme); } catch {} }, [p.theme]);
     useEffect(() => { scroller.current?.scrollTo({ top: 0 }); }, [tab, part]);
     useEffect(() => { if (!toast) return; const t = setTimeout(() => setToast(''), 1800); return () => clearTimeout(t); }, [toast]);
     useEffect(() => () => { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); }, []);
@@ -159,13 +165,13 @@ function Reader({ ch, onBack }: { ch: Chapter; onBack: () => void }) {
     nodes.push({ kind: 'practice', id: 'pr', label: 'Пазлы решений' }, { kind: 'dlg', id: 'dl', label: 'Диалог: решение основателя' });
     const offs = [0, 38, 58, 38, 0, -38, -58, -38];
     const level = Math.floor(p.xp / 60) + 1;
-    const fontFam = p.font === 'inter' ? 'var(--f-inter)' : p.font === 'serif' ? 'Georgia, "Times New Roman", serif' : 'var(--f-sys)';
+    const fontFam = p.font === 'inter' ? 'var(--f-inter)' : p.font === 'serif' ? 'var(--f-read)' : 'var(--f-sys)';
     const readStyle = { fontSize: p.size + 'px', fontFamily: fontFam, filter: 'brightness(' + p.bright / 100 + ')' } as React.CSSProperties;
     const pt = PARTS[part];
 
     const dnode = DIALOGUE[dstep];
 
-    return <div className="app" data-theme={p.theme}>
+    return <div className="app" data-theme={p.theme} data-acc={accOf(ch.id)}>
         <header className="top">
             <div className="brand"><button className="ghost back" onClick={onBack} aria-label="Все главы">‹</button><span className="dot" />DreamPlaybook<small>глава {ch.no}</small></div>
             <div className="stats">
@@ -309,9 +315,9 @@ function Reader({ ch, onBack }: { ch: Chapter; onBack: () => void }) {
                 {sheet === 'settings' ? <>
                     <div className="sheet-t">Настройки чтения</div>
                     <div className="set-l">Тема</div>
-                    <div className="seg wide">{[['oled', 'Чёрный'], ['graphite', 'Серый'], ['sepia', 'Сепия'], ['light', 'Белый']].map(([k, l]) => <button key={k} className={p.theme === k ? 'on' : ''} onClick={() => upd(x => ({ ...x, theme: k }))}>{l}</button>)}</div>
+                    <div className="seg wide">{[['oled', 'Индиго'], ['graphite', 'Серый'], ['sepia', 'Сепия'], ['light', 'Фарфор']].map(([k, l]) => <button key={k} className={p.theme === k ? 'on' : ''} onClick={() => upd(x => ({ ...x, theme: k }))}>{l}</button>)}</div>
                     <div className="set-l">Шрифт</div>
-                    <div className="seg wide">{[['inter', 'Inter'], ['sys', 'Системный'], ['serif', 'С засечками']].map(([k, l]) => <button key={k} className={p.font === k ? 'on' : ''} onClick={() => upd(x => ({ ...x, font: k }))}>{l}</button>)}</div>
+                    <div className="seg wide">{[['serif', 'Literata'], ['inter', 'Inter'], ['sys', 'Системный']].map(([k, l]) => <button key={k} className={p.font === k ? 'on' : ''} onClick={() => upd(x => ({ ...x, font: k }))}>{l}</button>)}</div>
                     <div className="set-l">Размер текста: {p.size}</div>
                     <input type="range" min={14} max={24} value={p.size} onChange={e => upd(x => ({ ...x, size: Number(e.target.value) }))} />
                     <div className="set-l">Яркость: {p.bright}%</div>
@@ -333,7 +339,7 @@ export function App() {
     const go = (id: string | null) => { setOpen(id); try { id ? localStorage.setItem('pb.open', id) : localStorage.removeItem('pb.open'); } catch {} };
     const ch = CHAPTERS.find(c => c.id === open);
     if (ch) return <Reader key={ch.id} ch={ch} onBack={() => go(null)} />;
-    return <div className="app" data-theme="oled">
+    return <div className="app" data-theme={(() => { try { return localStorage.getItem('pb.theme') || 'oled'; } catch { return 'oled'; } })()} data-acc="0">
         <header className="top"><div className="brand"><span className="dot" />DreamPlaybook<small>том 1</small></div></header>
         <div className="scroller"><section className="pane fade">
             <div className="hero glass">
