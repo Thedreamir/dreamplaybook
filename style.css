@@ -340,3 +340,12 @@ mark.kw{background:rgba(var(--acc-rgb),.16)}
 .toc-m{flex:0 0 18px;color:#a07a3a;font-size:15px}
 .toc li.cur .toc-n{color:#d9a441;text-shadow:0 0 12px rgba(217,164,65,.45)}
 .toc li.done .toc-t b{opacity:.7}
+/* no violet: leather brown and gold accents everywhere */
+.app[data-acc]{--a-l:#8a5a1f;--a-l-rgb:138,90,31;--a-d:#d3a04a;--a-d-rgb:211,160,74}
+.app[data-theme='oled']{--bg:#17110b;--bg2:#21180f;--ink:#f3e9d6;--ink2:#c3b194;--ink3:#8f7e63;--on-em:#17110b}
+.app[data-theme='graphite']{--bg:#1b1815;--bg2:#24201c}
+.sup,.src-chip{background:rgba(110,75,30,.14)!important;color:#7a4a14!important;border:1px solid rgba(110,75,30,.25);font-family:var(--f-read,Georgia,serif);font-style:italic}
+mark.kw{background:rgba(205,160,70,.28)!important;color:inherit}
+.tabs button.on,.tabs button.on span,.tabs button.on svg{color:#f6d68f!important}
+.reader p.hl,.reader .hl,.p.hl{background:rgba(216,176,90,.28)!important;box-shadow:none!important}
+.reader .hl,.pane .hl{border-left-color:#a07a3a!important}
