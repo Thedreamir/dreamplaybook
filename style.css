@@ -410,3 +410,5 @@ button:active:not(:disabled){transform:scale(.965);filter:brightness(.94)}
 @keyframes curlGrow{0%{width:0;height:0}100%{width:min(380px,96vw);height:min(760px,78vh)}}
 .curl.out-prev i,.curl.in-prev i{transform:scaleX(-1);right:auto;left:0}
 .reader.turn-out-next>*:not(.curl),.reader.turn-out-prev>*:not(.curl){transition:opacity .45s;opacity:.55}
+.scroller{perspective:none!important}
+.reader{will-change:auto!important;backface-visibility:visible!important}
