@@ -224,7 +224,6 @@ function Reader({ ch: chRu, onBack }: { ch: Chapter; onBack: () => void }) {
                         <button className={speaking ? 'on' : ''} onClick={() => speak(pt.blocks.map(b => b.t === 'p' ? b.text : b.t === 'fact' ? b.label + '. ' + b.value : '').filter(Boolean).join(' '))}><Icon name={speaking ? 'stop' : 'play'} />{t('Слушать','Listen')}</button>
                     </div>
                 </div>
-                {turning && <div className={'curl ' + turning} aria-hidden="true"><i /></div>}
                 <aside className="era" aria-hidden="true"><span className="era-y">{ch.year}</span><i className="era-line"><b style={{ height: ((part + 1) / total * 100) + '%' }} /></i><span className="era-n">{ROMAN[part] ?? part + 1}/{ROMAN[total - 1] ?? total}</span>{pt.era && <span className="era-h">{pt.era}</span>}</aside>
                 <div className="eyebrow">{t('ЧАСТЬ','PART')} {pt.n} · {pt.kicker.toUpperCase()}</div>
                 <h2>{pt.title}</h2>
@@ -312,6 +311,7 @@ function Reader({ ch: chRu, onBack }: { ch: Chapter; onBack: () => void }) {
                 <button key={k} className={tab === k ? 'on' : ''} onClick={() => setTab(k)}><Icon name={ic} /><span>{l}</span></button>)}
         </nav>
 
+        {turning && <div className={'curl ' + turning} aria-hidden="true"><i /></div>}
         {boom && <Confetti />}
         {toast && <div className="toast" role="status">{toast}</div>}
 
