@@ -166,7 +166,7 @@ export function App() {
 
     return <div className="app" data-theme={p.theme}>
         <header className="top">
-            <div className="brand"><span className="dot" />Книга империй<small>глава 01</small></div>
+            <div className="brand"><span className="dot" />DreamPlaybook<small>глава 01</small></div>
             <div className="stats">
                 <span className="stat s-streak" title="Серия дней"><Icon name="flame" /><b>{p.streak}</b></span>
                 <span className="stat s-xp" title="Опыт"><Icon name="star" /><b>{p.xp}</b></span>
@@ -285,9 +285,9 @@ export function App() {
                     if (!text) return null;
                     return <div className="note glass" key={id}>
                         <div className="n-t">«{text}»</div>
-                        <div className="n-f">Книга империй · Duolingo · {part_?.title}</div>
+                        <div className="n-f">DreamPlaybook · Duolingo · {part_?.title}</div>
                         <div className="two">
-                            <button className="ghost" onClick={() => { void navigator.clipboard?.writeText('«' + text + '»\nКнига империй, Duolingo'); setToast('Скопировано'); }}><Icon name="copy" />Копировать</button>
+                            <button className="ghost" onClick={() => { void navigator.clipboard?.writeText('«' + text + '»\nDreamPlaybook, Duolingo'); setToast('Скопировано'); }}><Icon name="copy" />Копировать</button>
                             <button className="ghost" onClick={() => toggleHl(id)}>Убрать</button>
                         </div>
                     </div>;
