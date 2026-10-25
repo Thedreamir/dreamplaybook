@@ -12,5 +12,6 @@ import { SHOPIFY } from './ch-shopify';
 import { TELEGRAM } from './ch-telegram';
 import { WHATSAPP } from './ch-whatsapp';
 import { INSTAGRAM } from './ch-instagram';
+import { TIKTOK } from './ch-tiktok';
 
-export const CHAPTERS: Chapter[] = [DUOLINGO, APPLE, AIRBNB, UBER, STRIPE, DROPBOX, NOTION, FIGMA, CANVA, SHOPIFY, TELEGRAM, WHATSAPP, INSTAGRAM];
+export const CHAPTERS: Chapter[] = [DUOLINGO, APPLE, AIRBNB, UBER, STRIPE, DROPBOX, NOTION, FIGMA, CANVA, SHOPIFY, TELEGRAM, WHATSAPP, INSTAGRAM, TIKTOK];
