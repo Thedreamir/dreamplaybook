@@ -9,5 +9,6 @@ import { NOTION } from './ch-notion';
 import { FIGMA } from './ch-figma';
 import { CANVA } from './ch-canva';
 import { SHOPIFY } from './ch-shopify';
+import { TELEGRAM } from './ch-telegram';
 
-export const CHAPTERS: Chapter[] = [DUOLINGO, APPLE, AIRBNB, UBER, STRIPE, DROPBOX, NOTION, FIGMA, CANVA, SHOPIFY];
+export const CHAPTERS: Chapter[] = [DUOLINGO, APPLE, AIRBNB, UBER, STRIPE, DROPBOX, NOTION, FIGMA, CANVA, SHOPIFY, TELEGRAM];
