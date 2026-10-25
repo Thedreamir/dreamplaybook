@@ -17,7 +17,7 @@ const today = () => new Date().toISOString().slice(0, 10);
 const yesterday = () => new Date(Date.now() - 86400000).toISOString().slice(0, 10);
 
 function Icon({ name }: { name: string }) {
-    const c = { fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
+    const c = { fill: 'none', stroke: 'currentColor', strokeWidth: 1.25, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
     const paths: Record<string, React.ReactNode> = {
         target: <><circle cx="12" cy="12" r="8" {...c} /><circle cx="12" cy="12" r="3.5" {...c} /></>,
         layers: <><path d="M12 3l9 5-9 5-9-5 9-5z" {...c} /><path d="M3 13l9 5 9-5" {...c} /></>,
@@ -219,6 +219,7 @@ function Reader({ ch: chRu, onBack }: { ch: Chapter; onBack: () => void }) {
                         <button className={speaking ? 'on' : ''} onClick={() => speak(pt.blocks.map(b => b.t === 'p' ? b.text : b.t === 'fact' ? b.label + '. ' + b.value : '').filter(Boolean).join(' '))}><Icon name={speaking ? 'stop' : 'play'} />{t('Слушать','Listen')}</button>
                     </div>
                 </div>
+                <aside className="era" aria-hidden="true"><span className="era-y">{ch.year}</span><i className="era-line"><b style={{ height: ((part + 1) / total * 100) + '%' }} /></i><span className="era-n">{ROMAN[part] ?? part + 1}/{ROMAN[total - 1] ?? total}</span>{pt.era && <span className="era-h">{pt.era}</span>}</aside>
                 <div className="eyebrow">{t('ЧАСТЬ','PART')} {pt.n} · {pt.kicker.toUpperCase()}</div>
                 <h2>{pt.title}</h2>
                 <p className="hint">{t('Нажми на абзац, чтобы сохранить мысль.','Tap a paragraph to save it.')}</p>

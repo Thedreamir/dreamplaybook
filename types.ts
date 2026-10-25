@@ -10,7 +10,7 @@ export type Block =
     | { t: 'chart'; title: string; bars: { label: string; value: number; text: string }[]; note: string; src?: string[] }
     | { t: 'video'; title: string; note: string; url: string }
     | { t: 'warn'; title: string; text: string; src?: string[] };
-export type Part = { id: string; n: string; title: string; kicker: string; xp: number; blocks: Block[] };
+export type Part = { id: string; n: string; title: string; kicker: string; xp: number; era?: string; blocks: Block[] };
 
 export type Puzzle = { id: string; title: string; setup: string; options: { text: string; verdict: string }[]; best: number; fact: string; src: string[]; xp: number };
 export type DNode = { id: string; speaker: string; text: string; choices: { text: string; reply: string; good: boolean; next?: string }[] };

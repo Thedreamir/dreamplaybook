@@ -349,3 +349,12 @@ mark.kw{background:rgba(205,160,70,.28)!important;color:inherit}
 .tabs button.on,.tabs button.on span,.tabs button.on svg{color:#f6d68f!important}
 .reader p.hl,.reader .hl,.p.hl{background:rgba(216,176,90,.28)!important;box-shadow:none!important}
 .reader .hl,.pane .hl{border-left-color:#a07a3a!important}
+.reader{position:relative}
+.era{position:sticky;top:8px;float:right;margin:0 -10px 0 8px;width:34px;height:60vh;display:flex;flex-direction:column;align-items:center;gap:8px;z-index:3;pointer-events:none;color:#8a5a1f}
+.era-y{writing-mode:vertical-rl;font:italic 600 15px var(--f-read,Georgia,serif);letter-spacing:.12em}
+.era-line{flex:1;width:2px;background:rgba(120,90,50,.25);border-radius:2px;position:relative;overflow:hidden}
+.era-line b{display:block;width:100%;background:linear-gradient(#d3a04a,#8a5a1f)}
+.era-n{font:600 9px var(--f-sys);letter-spacing:.08em}
+.era-h{display:none}
+.tabs svg{width:24px;height:24px;filter:drop-shadow(0 1px 0 rgba(255,255,255,.35))}
+.tabs button.on svg{filter:drop-shadow(0 0 6px rgba(246,214,143,.6))}
