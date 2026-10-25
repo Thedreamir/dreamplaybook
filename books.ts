@@ -8,5 +8,6 @@ import { DROPBOX } from './ch-dropbox';
 import { NOTION } from './ch-notion';
 import { FIGMA } from './ch-figma';
 import { CANVA } from './ch-canva';
+import { SHOPIFY } from './ch-shopify';
 
-export const CHAPTERS: Chapter[] = [DUOLINGO, APPLE, AIRBNB, UBER, STRIPE, DROPBOX, NOTION, FIGMA, CANVA];
+export const CHAPTERS: Chapter[] = [DUOLINGO, APPLE, AIRBNB, UBER, STRIPE, DROPBOX, NOTION, FIGMA, CANVA, SHOPIFY];
