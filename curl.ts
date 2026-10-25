@@ -12,7 +12,7 @@ const clipHalf = (poly: P[], n: P, c: number, keepLE: boolean): P[] => {
     return out;
 };
 const pts = (poly: P[]) => poly.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
-const ease = (t: number) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const ease = (t: number) => -(Math.cos(Math.PI * t) - 1) / 2;
 
 export function pageCurl(app: HTMLElement, reader: HTMLElement, host: HTMLElement, dir: 'next' | 'prev', swap: () => void, done: () => void) {
     const hr = host.getBoundingClientRect();
@@ -45,7 +45,7 @@ export function pageCurl(app: HTMLElement, reader: HTMLElement, host: HTMLElemen
     const rect: P[] = [[0, 0], [W, 0], [W, H], [0, H]];
     const dMax = Math.max(...rect.map(p => n[0] * (p[0] - corner[0]) + n[1] * (p[1] - corner[1]))) + 12;
     const nc = n[0] * corner[0] + n[1] * corner[1];
-    const dur = reduce ? 1 : 950; const t0 = performance.now();
+    const dur = reduce ? 1 : 1100; const t0 = performance.now();
     const shEl = svg.querySelector('#pcsh') as SVGPolygonElement, flEl = svg.querySelector('#pcf') as SVGPolygonElement;
     const g1 = svg.querySelector('#pcg') as SVGLinearGradientElement, g2 = svg.querySelector('#pcs') as SVGLinearGradientElement;
     const frame = (now: number) => {
@@ -61,7 +61,7 @@ export function pageCurl(app: HTMLElement, reader: HTMLElement, host: HTMLElemen
         const base: P = [gx * c, gy * c];
         // gradient runs across the fold from fold line outward over the flap
         g1.setAttribute('x1', String(base[0] - gx * 0)); g1.setAttribute('y1', String(base[1]));
-        g1.setAttribute('x2', String(base[0] - gx * Math.max(30, d * 0.8))); g1.setAttribute('y2', String(base[1] - gy * Math.max(30, d * 0.8)));
+        g1.setAttribute('x2', String(base[0] + gx * Math.max(30, d * 0.9))); g1.setAttribute('y2', String(base[1] + gy * Math.max(30, d * 0.9)));
         const band = clipHalf(clipHalf(rect, n, c, false), n, c + 46, true);
         shEl.setAttribute('points', band.length > 2 && d > 0.5 ? pts(band) : '');
         g2.setAttribute('x1', String(base[0])); g2.setAttribute('y1', String(base[1]));
