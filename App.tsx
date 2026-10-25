@@ -3,6 +3,7 @@ import { useLocalState } from './storage';
 import './style.css';
 import { CHAPTERS } from './books';
 import type { Block, Chapter } from './types';
+import { pageCurl } from './curl';
 import { useLang, setLang, EN } from './i18n';
 const L = (l: string, ru: string, en: string) => (l === 'en' ? en : ru);
 
@@ -123,8 +124,14 @@ function Reader({ ch: chRu, onBack }: { ch: Chapter; onBack: () => void }) {
     const [dpick, setDpick] = useState<number | null>(null);
     const scroller = useRef<HTMLDivElement>(null);
 
-    const [turning, setTurning] = useState<'' | 'out-next' | 'in-next' | 'out-prev' | 'in-prev'>('');
-    const turn = (n: number) => { if (turning || n < 0 || n >= total || n === part) return; const d = n > part ? 'next' : 'prev'; setTurning(('out-' + d) as 'out-next'); setTimeout(() => { setPart(n); setTurning(('in-' + d) as 'in-next'); setTimeout(() => setTurning(''), 520); }, 480); };
+    const busy = useRef(false);
+    const turn = (n: number) => {
+        if (busy.current || n < 0 || n >= total || n === part) return;
+        const host = scroller.current; const r = host?.querySelector('.reader') as HTMLElement | null; const app = host?.parentElement;
+        if (!host || !r || !app) { setPart(n); return; }
+        busy.current = true;
+        pageCurl(app, r, host, n > part ? 'next' : 'prev', () => { setPart(n); host.scrollTo({ top: 0 }); }, () => { busy.current = false; });
+    };
     const upd = (f: (x: Prog) => Prog) => { if (saved.ready) setP(f(p)); };
     useEffect(() => { document.documentElement.setAttribute('data-theme', p.theme); try { localStorage.setItem('pb.theme', p.theme); } catch {} }, [p.theme]);
     useEffect(() => { scroller.current?.scrollTo({ top: 0 }); }, [tab, part]);
@@ -216,7 +223,7 @@ function Reader({ ch: chRu, onBack }: { ch: Chapter; onBack: () => void }) {
                 <div className="blessed">Blessed by &lt;O&gt;</div>
             </section>}
 
-            {tab === 'read' && <section className={'pane fade reader ' + (turning ? 'turn-' + turning : '')} style={readStyle}>
+            {tab === 'read' && <section className="pane fade reader" style={readStyle}>
                 <div className="r-top">
                     <button className="ghost" onClick={() => setTab('path')}>{t('← Оглавление','← Contents')}</button>
                     <div className="seg">
@@ -310,8 +317,6 @@ function Reader({ ch: chRu, onBack }: { ch: Chapter; onBack: () => void }) {
             {([['path', t('Оглавление','Contents'), 'toc'], ['read', t('Читать','Read'), 'open'], ['notes', t('Заметки','Notes'), 'quill']] as const).map(([k, l, ic]) =>
                 <button key={k} className={tab === k ? 'on' : ''} onClick={() => setTab(k)}><Icon name={ic} /><span>{l}</span></button>)}
         </nav>
-
-        {turning && <div className={'curl ' + turning} aria-hidden="true"><i /></div>}
         {boom && <Confetti />}
         {toast && <div className="toast" role="status">{toast}</div>}
 
