@@ -90,6 +90,7 @@ function BlockView({ b, id, hl, toggle, onSrc }: { b: Block; id: string; hl: boo
     if (b.t === 'gap') return <div className="gap"><b>Не нашёл.</b> {b.text.replace(/^Не нашёл: /, '')}</div>;
     if (b.t === 'img') return <figure className="fig"><img src={b.file} alt={b.alt} loading="lazy" /><figcaption>{b.caption} <a href={b.url || '#'} target="_blank" rel="noreferrer">{b.credit}</a></figcaption></figure>;
     if (b.t === 'stickers') return <div className="stickers">{b.items.map((s, i) => <div key={i} className={'sticker t' + (i % 4)}><div><b>{s.big}</b><small>{s.small}</small></div></div>)}</div>;
+    if (b.t === 'chart') { const mx = Math.log10(Math.max(...b.bars.map(x => x.value))); return <figure className="chart"><div className="chart-t">{b.title}</div>{b.bars.map((x, i) => <div className="bar-row" key={i}><span className="bar-k">{x.label}</span><span className="bar-tr"><i style={{ width: Math.max(4, Math.log10(x.value) / mx * 100) + '%' }} /></span><span className="bar-v">{x.text}</span></div>)}<figcaption>{b.note} <Sup src={b.src} onSrc={onSrc} /></figcaption></figure>; }
     if (b.t === 'video') return <a className="vid" href={b.url} target="_blank" rel="noreferrer"><span className="vid-ic">▶</span><span><b>{b.title}</b><small>{b.note}</small></span></a>;
     if (b.t === 'warn') return <div className="warn glass"><div className="warn-t">{b.title}</div><p>{b.text} <Sup src={b.src} onSrc={onSrc} /></p></div>;
     if (b.t === 'ladder') return <div className="ladder glass"><div className="mx-l">ЛЕСТНИЦА АБСТРАКЦИИ</div><div className="mx-t">{b.title}</div>{b.steps.map((s, i) => <div className="rung" key={i} style={{ marginLeft: i * 10 }}><i>{i + 1}</i><span>{s}</span></div>)}</div>;
@@ -178,8 +179,6 @@ function Reader({ ch, onBack }: { ch: Chapter; onBack: () => void }) {
         <header className="top">
             <div className="brand"><button className="ghost back" onClick={onBack} aria-label="Все главы">‹</button><span className="dot" />DreamPlaybook<small>глава {ch.no}</small></div>
             <div className="stats">
-                <span className="stat s-streak" title="Серия дней"><Icon name="flame" /><b>{p.streak}</b></span>
-                <span className="stat s-xp" title="Опыт"><Icon name="star" /><b>{p.xp}</b></span>
                 <button className="icon-btn" onClick={() => setSheet('settings')} aria-label="Настройки чтения"><Icon name="gear" /></button>
             </div>
         </header>

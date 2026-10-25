@@ -7,6 +7,7 @@ export type Block =
     | { t: 'ladder'; title: string; steps: string[] }
     | { t: 'img'; file: string; alt: string; caption: string; credit: string; url?: string }
     | { t: 'stickers'; items: { big: string; small: string }[] }
+    | { t: 'chart'; title: string; bars: { label: string; value: number; text: string }[]; note: string; src?: string[] }
     | { t: 'video'; title: string; note: string; url: string }
     | { t: 'warn'; title: string; text: string; src?: string[] };
 export type Part = { id: string; n: string; title: string; kicker: string; xp: number; blocks: Block[] };
