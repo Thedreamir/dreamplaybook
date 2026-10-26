@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocalState } from './storage';
 import './style.css';
-import { CHAPTERS } from './books';
+import { CHAPTERS } from './all';
 import type { Block, Chapter } from './types';
 import { pageCurl } from './curl';
 import { ShareSheet } from './share';
@@ -375,7 +375,7 @@ export function App() {
                 <div className="eyebrow">{t('ТОМ 1 · КАК РОЖДАЮТСЯ ИМПЕРИИ','VOLUME 1 · HOW EMPIRES ARE BORN')}</div>
                 <h1>{t('Истории основателей от первых принципов','Founder stories from first principles')}</h1>
                 <p className="sub">Каждая глава: рождение идеи, боль, первые пользователи, деньги, рост. Только факты с источниками, а где данных нет, так и написано.</p>
-                <div className="bar-l">{t('Глав готово','Chapters ready')}: {CHAPTERS.length} {t('из','of')} 26</div>
+                <div className="bar-l">{t('Глав в книге','Chapters in the book')}: {CHAPTERS.length}</div>
             </div>
             <div className="shelf">
                 {CHAPTERS.map(c0 => { const c = lang === 'en' && EN[c0.id] ? EN[c0.id] : c0; return <button key={c.id} className="book glass" onClick={() => go(c.id)}>
