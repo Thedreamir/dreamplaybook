@@ -16,5 +16,6 @@ import { TIKTOK } from './ch-tiktok';
 import { DISCORD } from './ch-discord';
 import { TINDER } from './ch-tinder';
 import { SPOTIFY } from './ch-spotify';
+import { ROBLOX } from './ch-roblox';
 
-export const CHAPTERS: Chapter[] = [DUOLINGO, APPLE, AIRBNB, UBER, STRIPE, DROPBOX, NOTION, FIGMA, CANVA, SHOPIFY, TELEGRAM, WHATSAPP, INSTAGRAM, TIKTOK, DISCORD, TINDER, SPOTIFY];
+export const CHAPTERS: Chapter[] = [DUOLINGO, APPLE, AIRBNB, UBER, STRIPE, DROPBOX, NOTION, FIGMA, CANVA, SHOPIFY, TELEGRAM, WHATSAPP, INSTAGRAM, TIKTOK, DISCORD, TINDER, SPOTIFY, ROBLOX];
