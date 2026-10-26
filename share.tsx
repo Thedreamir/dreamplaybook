@@ -94,7 +94,7 @@ export function ShareSheet({ quote, source, lang, onClose, whole }: { quote: str
                 <button onClick={save}><b>↓</b>{t('Сохранить', 'Save image')}</button>
                 <button onClick={copy}><b>⧉</b>{t('Копировать', 'Copy')}</button>
             </div>
-            {whole && <div className="share-row"><button onClick={() => setFull(false)} style={{ opacity: full ? .6 : 1 }}>{t('Цитата', 'Quote')}</button><button onClick={() => setFull(true)} style={{ opacity: full ? 1 : .6 }}>{t('Вся глава', 'Whole chapter')}</button></div>}
+            {whole && <div className="seg" role="tablist"><button role="tab" aria-selected={!full} className={full ? '' : 'on'} onClick={() => setFull(false)}>{t('Цитата', 'Quote')}</button><button role="tab" aria-selected={full} className={full ? 'on' : ''} onClick={() => setFull(true)}>{t('Вся глава', 'Whole chapter')}</button></div>}
             <button className="linkbtn" onClick={() => setEditQ(!editQ)}>{t('Изменить цитату', 'Edit quote')}</button>
             {editQ && <textarea className="share-q" value={q} onChange={e => setQ(e.target.value)} rows={5} />}
             {msg && <div className="note-s">{msg}</div>}
