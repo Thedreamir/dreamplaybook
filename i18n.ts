@@ -11,4 +11,5 @@ export function useLang(): Lang {
 // English chapters live in en-<id>.ts and are registered here. Missing ones fall back to RU.
 import { DUOLINGO_EN } from './en-duolingo';
 import { APPLE_EN } from './en-apple';
-export const EN: Record<string, Chapter> = { duolingo: DUOLINGO_EN, apple: APPLE_EN };
+import { AIRBNB_EN } from './en-airbnb';
+export const EN: Record<string, Chapter> = { duolingo: DUOLINGO_EN, apple: APPLE_EN, airbnb: AIRBNB_EN };
