@@ -25,4 +25,5 @@ import { INSTAGRAM_EN } from './en-instagram';
 import { TIKTOK_EN } from './en-tiktok';
 import { DISCORD_EN } from './ch-discord';
 import { TINDER_EN } from './ch-tinder';
-export const EN: Record<string, Chapter> = { duolingo: DUOLINGO_EN, apple: APPLE_EN, airbnb: AIRBNB_EN, uber: UBER_EN, stripe: STRIPE_EN, dropbox: DROPBOX_EN, notion: NOTION_EN, figma: FIGMA_EN, canva: CANVA_EN, shopify: SHOPIFY_EN, telegram: TELEGRAM_EN, whatsapp: WHATSAPP_EN, instagram: INSTAGRAM_EN, tiktok: TIKTOK_EN, discord: DISCORD_EN, tinder: TINDER_EN };
+import { SPOTIFY_EN } from './ch-spotify';
+export const EN: Record<string, Chapter> = { duolingo: DUOLINGO_EN, apple: APPLE_EN, airbnb: AIRBNB_EN, uber: UBER_EN, stripe: STRIPE_EN, dropbox: DROPBOX_EN, notion: NOTION_EN, figma: FIGMA_EN, canva: CANVA_EN, shopify: SHOPIFY_EN, telegram: TELEGRAM_EN, whatsapp: WHATSAPP_EN, instagram: INSTAGRAM_EN, tiktok: TIKTOK_EN, discord: DISCORD_EN, tinder: TINDER_EN, spotify: SPOTIFY_EN };
