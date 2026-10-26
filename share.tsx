@@ -2,12 +2,19 @@ import React, { useEffect, useRef, useState } from 'react';
 
 const URL_BOOK = 'dreamplaybook.vercel.app';
 const CAPS_EN = [
-    'no way this is a real startup story',
-    'founders never say this part out loud',
-    'reading this at 2am and cannot stop',
-    'the book that explains how empires start',
+    'How great companies actually begin.',
+    'The part founders rarely tell.',
+    'A lesson worth keeping.',
+    'Read it once. Remember it for years.',
+    'Every empire starts small.',
 ];
-const CAPS_RU = ['вот как на самом деле начинаются империи', 'о таком основатели молчат', 'читаю и не могу оторваться'];
+const CAPS_RU = [
+    'Так на самом деле начинаются великие компании.',
+    'То, о чём основатели говорят редко.',
+    'Урок, который стоит сохранить.',
+    'Прочитай один раз, запомни на годы.',
+    'Любая империя начинается с малого.',
+];
 
 function wrap(ctx: CanvasRenderingContext2D, text: string, maxW: number): string[] {
     const words = text.split(/\s+/); const lines: string[] = []; let cur = '';
@@ -44,7 +51,7 @@ export async function renderCard(caption: string, quote: string, source: string)
 }
 
 export function ShareSheet({ quote, source, lang, onClose }: { quote: string; source: string; lang: 'ru' | 'en'; onClose: () => void }) {
-    const caps = [...CAPS_EN, ...CAPS_RU];
+    const caps = lang === 'en' ? CAPS_EN : CAPS_RU;
     const [idx, setIdx] = useState(0);
     const [cap, setCap] = useState(caps[0]);
     const [img, setImg] = useState('');

@@ -101,7 +101,7 @@ function BlockView({ b, id, hl, toggle, onSrc, onShare }: { b: Block; id: string
     if (b.t === 'stickers') return <div className="stickers">{b.items.map((s, i) => <div key={i} className={'sticker t' + (i % 4)}><div><b>{s.big}</b><small>{s.small}</small></div></div>)}</div>;
     if (b.t === 'chart') { const mx = Math.log10(Math.max(...b.bars.map(x => x.value))); return <figure className="chart"><div className="chart-t">{b.title}</div>{b.bars.map((x, i) => <div className="bar-row" key={i}><span className="bar-k">{x.label}</span><span className="bar-tr"><i style={{ width: Math.max(4, Math.log10(x.value) / mx * 100) + '%' }} /></span><span className="bar-v">{x.text}</span></div>)}<figcaption>{b.note} <Sup src={b.src} onSrc={onSrc} /></figcaption></figure>; }
     if (b.t === 'video') return <a className="vid" href={b.url} target="_blank" rel="noreferrer"><span className="vid-ic">▶</span><span><b>{b.title}</b><small>{b.note}</small></span></a>;
-    if (b.t === 'warn') return <div className="warn glass"><div className="warn-t">{b.title}</div><p>{b.text} <Sup src={b.src} onSrc={onSrc} /></p></div>;
+    if (b.t === 'warn') return <div className="warn glass"><div className="warn-t">{b.title}</div><p>{b.text} <Sup src={b.src} onSrc={onSrc} />{sh(b.title + '. ' + b.text)}</p></div>;
     if (b.t === 'ladder') return <div className="ladder glass"><div className="mx-l">ЛЕСТНИЦА АБСТРАКЦИИ</div><div className="mx-t">{b.title}</div>{b.steps.map((s, i) => <div className="rung" key={i} style={{ marginLeft: i * 10 }}><i>{i + 1}</i><span>{s}</span></div>)}</div>;
     return <div className="mx glass"><div className="mx-head"><span className="mx-ic"><Icon name={b.icon} /></span><div><div className="mx-l">{b.label}</div><div className="mx-t">{b.title}</div></div></div>{b.rows.map((r, i) => <div className="mx-row" key={i}><div className="mx-k">{r.k}</div><div className="mx-v">{r.v}</div></div>)}{b.src ? <Sup src={b.src} onSrc={onSrc} /> : null}</div>;
 }
@@ -309,6 +309,7 @@ function Reader({ ch: chRu, onBack }: { ch: Chapter; onBack: () => void }) {
                         <div className="n-t">«{text}»</div>
                         <div className="n-f">DreamPlaybook · {ch.company} · {part_?.title}</div>
                         <div className="two">
+                            <button className="ghost" onClick={() => setShare(text)}>↗ {t('Поделиться','Share')}</button>
                             <button className="ghost" onClick={() => { void navigator.clipboard?.writeText('«' + text + '»\nDreamPlaybook, ' + ch.company); setToast('Скопировано'); }}><Icon name="copy" />{t('Копировать','Copy')}</button>
                             <button className="ghost" onClick={() => toggleHl(id)}>{t('Убрать','Remove')}</button>
                         </div>
@@ -328,7 +329,7 @@ function Reader({ ch: chRu, onBack }: { ch: Chapter; onBack: () => void }) {
             <section className="pb-part"><h2>{t('Источники','Sources')}</h2><ol className="pb-src">{SOURCES.map(z => <li key={z.id}><b>{z.id}</b> {z.title} <i>({z.kind})</i><br /><span>{z.url}</span></li>)}</ol></section>
             <div className="blessed">Blessed by &lt;O&gt;</div>
         </div>
-        {share !== null && <ShareSheet quote={share} source={ch.company + ' · ' + ch.title.split(':')[0]} lang={lang} onClose={() => setShare(null)} />}
+        {share !== null && <ShareSheet quote={share} source={(() => { const a = ch.company, b2 = ch.title.split(':')[0].trim(); return a === b2 ? a : a + ' · ' + b2; })()} lang={lang} onClose={() => setShare(null)} />}
         {boom && <Confetti />}
         {toast && <div className="toast" role="status">{toast}</div>}
 
