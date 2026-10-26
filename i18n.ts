@@ -9,4 +9,5 @@ export function useLang(): Lang {
     return l;
 }
 // English chapters live in en-<id>.ts and are registered here. Missing ones fall back to RU.
-export const EN: Record<string, Chapter> = {};
+import { DUOLINGO_EN } from './en-duolingo';
+export const EN: Record<string, Chapter> = { duolingo: DUOLINGO_EN };

@@ -1,0 +1,183 @@
+import type { Chapter, Part } from './types';
+import { DUOLINGO } from './chapter';
+
+const KIND: Record<string, string> = { 'Первичка': 'Primary', 'Пресса': 'Press', 'Первое лицо': 'First-person', 'Первичка / пресса': 'Primary / press', 'Справочник (только как карта)': 'Reference (map only)', 'Первичка (заказное исследование)': 'Primary (commissioned study)' };
+const TITLE: Record<string, string> = {
+    S1: 'Duolingo, Inc. Form S-1 (2021): business description, metrics, revenue',
+    S2: 'Duolingo, Inc. 10-K for 2021, note on organization and IPO',
+    S6: "Jorge Mazal (former Head of Product, Duolingo), How Duolingo reignited user growth, Lenny's Newsletter (Feb 28, 2023)",
+    S8: 'Duolingo IPO pricing press release (Jul 27, 2021) and CNBC on the first trading day (Jul 28, 2021)',
+    S9: 'Duolingo shareholder letter for Q2 2026 (as of Jun 30, 2026)',
+    S10: 'Wikipedia, Duolingo: discrepancy on the beta and Series A (used only as a map)',
+    S12: 'Pavel Durov, Telegram channel post (Mar 19, 2025): over 1 billion monthly active users',
+    S16: 'Apple Newsroom: App Store ecosystem, $1.4 trillion in 2025 per an Analysis Group study (Jun 4, 2026)',
+    S17: 'TechCrunch: The apps that Apple sherlocked at WWDC (Jun 12, 2024) and NPR on sherlocking (Jun 18, 2024)',
+    S18: 'OpenAI: Introducing apps in ChatGPT and the Apps SDK (Oct 6, 2025) and TechCrunch coverage',
+};
+
+const PARTS: Part[] = [
+    { id: 'p0', n: '0', title: 'Prologue: the owl and one question', kicker: 'Why this case comes first', xp: 20, blocks: [
+        { t: 'p', text: 'Duolingo is a language-learning app. In its shareholder letter for the second quarter of 2026 the company reports 58.7 million daily active users and 12.7 million paying subscribers at the end of the period.', src: ['S9'] },
+        { t: 'fact', label: 'Daily active users, Q2 2026', value: '58.7 million (+23% year over year)', src: ['S9'] },
+        { t: 'fact', label: 'Paying subscribers', value: '12.7 million (+17% year over year)', src: ['S9'] },
+        { t: 'p', text: 'But we open this chapter not with numbers but with a strange decision. In its S-1 the company says plainly that it deliberately does not put learning material behind a paywall. Anyone can learn for free, and the business is built around that choice, not in spite of it.', src: ['S1'] },
+        { t: 'p', text: 'The question of the chapter: how do you get millions of people to come back every day to the hardest activity there is, studying, and not pay for ads to do it? The S-1 frames the answer as a loop: a product people return to on their own brings the next users, and the next users bring the money.', src: ['S1'] },
+        { t: 'card', icon: 'target', title: 'Map of the chapter', label: 'HOW TO READ', rows: [
+            { k: 'Five parts', v: 'Genesis, pain, MVP and first people, money, PMF and ecosystem' },
+            { k: 'First-principles layer', v: 'We take decisions down to the foundation and rebuild them. This is our analysis and it is labeled as such' },
+            { k: 'Honesty labels', v: '[S1...S11] is a source. "Not found" means the data is not in open sources. "AI reconstruction" means the scene is invented for practice' },
+        ] },
+    ] },
+    { id: 'p1', n: '1', title: 'Genesis of the founders', kicker: 'Who, from where, and what spark', xp: 20, blocks: [
+        { t: 'p', text: 'Duolingo was founded by two engineers, Luis von Ahn and Severin Hacker. They met at Carnegie Mellon University: Luis was a professor in the computer science department, Severin was his graduate student. Luis grew up in Guatemala and is a MacArthur Fellow.', src: ['S1'] },
+        { t: 'p', text: 'Von Ahn told TechCrunch that his mother spent almost all of her income on his private schooling, and he puts the total at more than a million dollars. That is his own estimate, not a verified figure. But it explains the personal side of the mission: education should not depend on a family\'s wallet.', src: ['S3'] },
+        { t: 'p', text: 'Before Duolingo he already had two deals with Google. Google bought his reCAPTCHA project in 2009, and a year earlier it had licensed another of his research projects, a game for labeling images.', src: ['S3'] },
+        { t: 'fact', label: 'The spark (in von Ahn\'s words)', value: 'At the peak, people spent about 500,000 hours a day typing CAPTCHAs. The question: can those hours be pointed at something useful? The number is his estimate.', src: ['S3'] },
+        { t: 'fact', label: 'Company founded', value: 'August 18, 2011', src: ['S2'] },
+        { t: 'ladder', title: 'Ladder of abstraction: where the idea came from', steps: [
+            'Concrete: a person types a distorted word for 10 seconds',
+            'Pattern: the attention of millions of people can be pointed at a useful task',
+            'Principle: scale belongs to whoever has a mass habit, not to whoever has the best advertising',
+            'Application in Duolingo: you need a product people come back to on their own',
+        ] },
+        { t: 'card', icon: 'layers', title: 'First-principles layer', label: 'OUR ANALYSIS', rows: [
+            { k: 'What everyone assumed', v: 'Good education costs money and requires teachers' },
+            { k: 'Foundation', v: 'Education has three parts: content, delivery, motivation. In the smartphone era delivery is almost free and content copies without loss' },
+            { k: 'Rebuild', v: 'Only one part is expensive: motivation. So give the content away and put the effort into motivation' },
+        ] },
+    ] },
+    { id: 'p2', n: '2', title: 'Finding the pain', kicker: 'What problem they were really solving', xp: 20, blocks: [
+        { t: 'p', text: 'The market the founders entered already existed and paid. According to von Ahn\'s account to TechCrunch, the leading product of the time, Rosetta Stone, sold on a disc for $600-700 and had no app. TechCrunch cites an estimate of the language-learning market at $82.6 billion.', src: ['S3'] },
+        { t: 'p', text: 'The first pain is on the surface: access costs too much. But it does not explain why people quit. The second pain is deeper. The S-1 says: the hardest part of learning something new is staying motivated.', src: ['S1'] },
+        { t: 'p', text: 'Tyler Murphy, the company\'s future head designer, put the task this way: people do not fall in love with learning the way many of us do, so you need an entry that hooks them. He himself called it a "gateway drug".', src: ['S3'] },
+        { t: 'gap', text: 'Not found: public data on how exactly customer discovery went in 2010-2011, the number of interviews or respondents. We will not invent it.' },
+        { t: 'card', icon: 'flame', title: 'Two pains', label: 'BREAKDOWN', rows: [
+            { k: 'Visible pain', v: 'Expensive and boring. Courses on discs, a university tone' },
+            { k: 'Hidden pain', v: 'A person starts with enthusiasm and quits within a week. The problem is not knowledge but habit' },
+            { k: 'Conclusion', v: 'Solve the hidden pain. Then free access becomes part of the solution' },
+        ] },
+    ] },
+    { id: 'p3', n: '3', title: 'MVP and first users', kicker: '100, 1,000, 10,000: what is known and what is not', xp: 25, blocks: [
+        { t: 'p', text: 'The first version was not the Duolingo we know. It was a website where you learn a language by translating real texts from the internet. The idea works on two sides: students get a free lesson, and companies pay for the translations the students produce along the way. For sales the company signed BuzzFeed and CNN.', src: ['S3'] },
+        { t: 'p', text: 'TechCrunch cites the team\'s own calculation: if a million users came to Duolingo, the English Wikipedia could be translated into Spanish in about 80 hours.', src: ['S3'] },
+        { t: 'fact', label: 'Public announcement of the idea', value: 'April 2011: TechCrunch writes that Duolingo is "exploding" on Hacker News, although almost nothing is known about the product', src: ['S11'] },
+        { t: 'fact', label: 'Closed beta', value: 'By launch the closed beta had about 125,000 people (TechCrunch EC-1). Wikipedia gives different numbers: 100,000+ on the waiting list as of December 13, 2011 and about 500,000 by launch. The sources disagree.', src: ['S3', 'S10'] },
+        { t: 'fact', label: 'Opened to everyone', value: 'June 19, 2012', src: ['S2', 'S7'] },
+        { t: 'fact', label: 'Less than a year after launch', value: 'More than 300,000 website users, 30 minutes a day on average', src: ['S3'] },
+        { t: 'card', icon: 'users', title: 'First 100 / 1,000 / 10,000', label: 'HONEST TABLE', rows: [
+            { k: 'First 100', v: 'Not found in open sources' },
+            { k: 'First 1,000', v: 'Not found in open sources' },
+            { k: 'First 10,000', v: 'No exact figure found. Nearest confirmed milestones: a beta of 100,000+ and 300,000+ after launch' },
+            { k: 'What worked', v: 'Von Ahn\'s reputation after reCAPTCHA and press attention. TechCrunch calls it a "sweetener" for the first investors and press' },
+        ], src: ['S3', 'S11'] },
+        { t: 'p', text: 'Then something unexpected happened. They decided to add a companion app to the site and gave the prototype to two newly hired interns, Tyler Murphy and David Klionsky. Neither of them had ever owned a smartphone. They set the goal of building not a placeholder of flashcards but a full free app, without separate versions for each language.', src: ['S3'] },
+        { t: 'p', text: 'The "one experience for everyone" decision forced the team to define the core of the product. According to Murphy, that is a skill tree that opens as you progress, and a celebration after each lesson.', src: ['S3'] },
+        { t: 'fact', label: 'Result of the app release', value: 'Within a week it became the most downloaded app in the Education category. In 2013 Apple named it iPhone App of the Year', src: ['S3'] },
+        { t: 'warn', title: 'The business model had to be killed', text: 'About 80% of traffic already came from mobile, while the money was supposed to come from translations on the website. The team itself realized that teaching a language and selling translations were different goals. By the end of 2013 translation as a business was shut down.', src: ['S3'] },
+        { t: 'card', icon: 'layers', title: 'First-principles layer', label: 'OUR ANALYSIS', rows: [
+            { k: 'Assumption', v: 'People will not want to learn a language on a phone' },
+            { k: 'Foundation', v: 'A product lives where a person has a free 3-5 minutes. The phone is always in hand' },
+            { k: 'Rebuild', v: 'A short lesson, progress visible at once, one interface for all languages. The conclusion was drawn not by analysts but by interns who simply used a phone' },
+        ] },
+    ] },
+    { id: 'p4', n: '4', title: 'Money and valuation', kicker: 'Rounds, pressure and the road to the stock market', xp: 25, blocks: [
+        { t: 'p', text: 'Series A in 2011. TechCrunch writes that the company wanted to raise $3.5 million, Wikipedia says $3.3 million. Union Square Ventures (Brad Burnham) led, with Ashton Kutcher and Tim Ferriss taking part. Von Ahn explains the choice: USV did not require a move to Silicon Valley and believed in education as a thesis.', src: ['S3', 'S10'] },
+        { t: 'p', text: 'Other investors, he says, did not understand what exactly the company would do, but agreed because he had twice sold projects to Google. That is his retelling; we do not have the investors\' exact words.', src: ['S3'] },
+        { t: 'fact', label: 'Series C, 2014', value: '$20 million, led by Kleiner Perkins (Bing Gordon)', src: ['S5'] },
+        { t: 'fact', label: 'Series D, June 2015', value: '$45 million, led by Google Capital, valuation $470 million', src: ['S5'] },
+        { t: 'warn', title: 'Pressure on revenue', text: 'By von Ahn\'s account, at Series D a Google Capital representative told him that big checks for audience growth had worked in earlier rounds, but "this is the last time". He needed a revenue model.', src: ['S5'] },
+        { t: 'fact', label: 'IPO, price', value: '$102 per share, announced July 27, 2021', src: ['S8'] },
+        { t: 'fact', label: 'Company proceeds from the IPO', value: '$455.5 million before fees (IPO closed July 30, 2021)', src: ['S2'] },
+        { t: 'fact', label: 'First trading day, July 28, 2021', value: 'Closed at $139.01, up 36%, market capitalization almost $5 billion (CNBC)', src: ['S8'] },
+        { t: 'gap', text: 'Not found: a public pitch deck of Duolingo for rounds A-D. The only public "pitch to the market" is the S-1, where the company describes two flywheels: the learning flywheel and the investment flywheel.' },
+        { t: 'card', icon: 'coins', title: 'First-principles layer', label: 'OUR ANALYSIS', rows: [
+            { k: 'Assumption', v: 'If you have users, revenue can be added later' },
+            { k: 'Foundation', v: 'Venture money is an advance against future revenue. Audience growth buys a delay, not a cancellation of the bill' },
+            { k: 'Rebuild', v: 'By 2015 they had to find a model that does not break the product. That is the next part' },
+        ] },
+    ] },
+    { id: 'p5', n: '5', title: 'PMF, money and ecosystem', kicker: 'How "free" became a business', xp: 30, blocks: [
+        { t: 'p', text: 'At launch the company said it would never have ads, subscriptions or in-app purchases. Today it has all of them, with one principle: the learning content stays free. By 2017 the app had 200 million users.', src: ['S5'] },
+        { t: 'p', text: 'The team experimented: paid certification (from which the Duolingo English Test grew, first $20, now $49), ads between lessons, in-app purchases. Purchases where you pay for faster progress were rejected by von Ahn: learning faster for money contradicted the mission. The open question was whether people could pay not for knowledge but for saved time. So they chose a subscription: Duolingo Plus launched in 2017 at the price of Tinder Plus, $6.99 a month, with a 14-day trial.', src: ['S5'] },
+        { t: 'fact', label: 'What the subscription gives', value: 'No ads and extra features. According to TechCrunch, streak repair, unlimited hearts and offline download were added later. Learning content is not restricted', src: ['S1'] },
+        { t: 'fact', label: 'Subscribers and the course', value: 'Subscribers are more than four times as likely to finish a Spanish course (TechCrunch)', src: ['S5'] },
+        { t: 'fact', label: 'Revenue structure 2020', value: 'Subscriptions about 73%, ads about 17%, Duolingo English Test and other about 10%', src: ['S1'] },
+        { t: 'fact', label: 'Revenue', value: '$70.8 million in 2019 and $161.7 million in 2020 (+129%)', src: ['S1'] },
+        { t: 'fact', label: 'Users and subscribers', value: 'Monthly actives 27 million (2019) and 37 million (2020). Paying 0.9 million and 1.6 million', src: ['S1'] },
+        { t: 'fact', label: 'Paid conversion', value: 'About 5% of monthly actives were paying as of March 31, 2021', src: ['S1'] },
+        { t: 'p', text: 'The S-1 describes growth without an ad budget this way: the main growth comes from word of mouth, not from paid acquisition.', src: ['S1'] },
+        { t: 'warn', title: 'Growth stalled, and that was fixable', text: 'Former head of product Jorge Mazal writes that by mid-2018 daily audience growth had slowed to single-digit percent a year. The first attempt (a gamification counter) had zero effect, the second (a referral program like Uber\'s) gave only +3% new users.', src: ['S6'] },
+        { t: 'p', text: 'The breakthrough came from leaderboards with leagues, a rework of push notifications and the streak. Leaderboards raised total learning time by 17%, and the number of the most engaged learners tripled. Von Ahn cited a time increase of about 20%. These data disagree; both numbers are given as participants\' claims.', src: ['S6', 'S4'] },
+        { t: 'p', text: 'The streak worked strongest: an evening "save your streak" notification, then a calendar, animations, freezes and rewards. Mazal gives the four-year result: retention of the best users rose 21%, daily churn of the best users fell by more than 40%, and daily audience grew 4.5 times. The share of users with a streak of 7 days or more almost tripled and passed half.', src: ['S6'] },
+        { t: 'fact', label: 'One-notification rule', value: 'The number of notifications per day cannot be raised without a strong justification and the CEO\'s consent. The lesson was taken from the Groupon story', src: ['S6'] },
+        { t: 'p', text: 'The ecosystem grows around a character. Duo the owl became a meme, and the team, in Murphy\'s words, decided to show its emotions on purpose because memes "gave permission". Then a whole universe of characters appeared. In 2020 the company launched Duolingo ABC for small children and writes openly about expanding beyond languages.', src: ['S4', 'S1'] },
+        { t: 'warn', title: 'The dark side we must not hide', text: 'Hearts that block a lesson after mistakes are called by employees the most controversial feature: learning means making mistakes. And a streak can be kept alive with one quick lesson, which is not necessarily study. TechCrunch writes that Duolingo is good at creating a habit, but that is not the same as teaching a language.', src: ['S4'] },
+        { t: 'card', icon: 'chart', title: 'First-principles layer', label: 'OUR ANALYSIS', rows: [
+            { k: 'Assumption', v: 'People pay for content, so it must be locked' },
+            { k: 'Foundation', v: 'People pay for what solves a pain. The pain here is motivation and convenience, not access to knowledge' },
+            { k: 'Rebuild', v: 'Free content creates mass. Those who need smoothness pay. The economics close on habit' },
+        ] },
+    ] },
+    { id: 'p6', n: '6', title: 'What transfers to you', kicker: 'Five rules you can take into any product', xp: 25, blocks: [
+        { t: 'p', text: 'These conclusions are our analysis, not the company\'s words. Each rests on a fact from the parts above.' },
+        { t: 'card', icon: 'rules', title: 'Five rules from the case', label: 'OUR ANALYSIS', rows: [
+            { k: '1. Find the expensive part', v: 'Split a product into content, delivery and motivation. Put money and effort into the part that is truly hard' },
+            { k: '2. Revenue and the customer\'s goal must match', v: 'Translation as a business had to be closed: teaching and selling translations were different goals' },
+            { k: '3. Measure the cause, not the symptom', v: 'User groups by return frequency and measurable transitions between them led to the streak, not intuition' },
+            { k: '4. Put a limiter on temptation', v: 'The one-notification rule protects long-term trust from short-term metrics' },
+            { k: '5. Free growth is an advance', v: 'You need a revenue model that does not break what people love you for' },
+        ] },
+        { t: 'warn', title: 'What not to copy blindly', text: 'Gamification can hold a user but not teach. If the reward is for opening the app and not for understanding, it is an empty habit. This is the main risk for our own book and app.', src: ['S4'] },
+        { t: 'card', icon: 'stone', title: 'Candidates for the book\'s "carved laws"', label: 'FOR THE FINAL SECTION', rows: [
+            { k: 'Law of motivation', v: 'The most expensive thing in any benefit is not the knowledge but coming back to it tomorrow' },
+            { k: 'Law of alignment', v: 'Money must come for the same behavior the user wants for himself' },
+            { k: 'Law of the advance', v: 'Growth without revenue is debt. It is closed with a model, not with hope' },
+        ] },
+    ] },
+    { id: 'p7', n: '7', title: 'Law of the environment: why ecosystems beat utilities', kicker: 'The core of a separate chapter of the book', xp: 40, blocks: [
+        { t: 'p', text: 'This is the core of a future big chapter of the book. The question: why does the environment people live in almost always beat a stand-alone utility, and what does that mean in the age of AI. We work from first principles. First verified facts, then our analysis, which is labeled as analysis.' },
+        { t: 'card', icon: 'layers', title: 'What is known from sources', label: 'FACTS', rows: [
+            { k: 'Telegram', v: 'On March 19, 2025 Durov announced more than a billion monthly active users. He also says the average user opens Telegram 21 times a day and spends 41 minutes. These are founder claims, not independently verified' },
+            { k: 'Telegram as a platform', v: 'In June 2024 the company wrote that 400+ million people a month use bots and mini apps. Stars let people sell digital goods inside. In November 2024 Mini Apps 2.0 came out (full screen, subscriptions, home-screen icon)' },
+            { k: 'Crypto in Telegram', v: 'Confirmed: a browser with Web3 support (July 2024). I did not verify data on a crypto exchange inside Telegram and on transfers, and I do not claim it' },
+            { k: 'App Store', v: 'Apple reports that in 2025 the App Store ecosystem facilitated more than $1.4 trillion in developer billings and sales, and more than 90% without an Apple commission. Apple itself commissioned the study, so we treat the figure as its claim' },
+            { k: 'Sherlocking', v: 'The name for when a platform builds a third-party app\'s feature in for free. The term comes from 2002 and the Sherlock search tool. TechCrunch and NPR go through examples from WWDC 2024' },
+            { k: 'AI', v: 'On October 6, 2025 OpenAI launched apps inside ChatGPT (Booking.com, Expedia, Spotify, Figma, Coursera, Zillow, Canva) and the Apps SDK. An OpenAI executive, as retold by PCMag, called it closer to an "operating system" than a store' },
+        ], src: ['S12', 'S13', 'S14', 'S15', 'S16', 'S17', 'S18'] },
+        { t: 'p', text: 'Now the analysis. Everything below is our analysis from first principles, not a fact from a source.' },
+        { t: 'card', icon: 'target', title: 'Six fundamental reasons', label: 'OUR ANALYSIS', rows: [
+            { k: '1. Attention is finite', v: 'A day has 24 hours and a person has a limited number of places on the screen. Every new app competes for those places. A utility pays for each place separately, an environment is already on it' },
+            { k: '2. Acquisition is the biggest cost', v: 'For a utility the main expense is finding the user. For an environment, adding a feature for people already inside is almost free. So at equal quality the environment wins on economics' },
+            { k: '3. Shared primitives', v: 'Every app needs sign-in, payment, friends, notifications, storage. A utility assembles them again. An environment builds them once, and every new feature gets them free' },
+            { k: '4. The point where intent begins', v: 'Whoever owns the place where a person starts any action wins: the OS, the store, the chat, the assistant. From there a utility\'s function can be built in, which is sherlocking' },
+            { k: '5. A two-sided flywheel', v: 'People go where the apps are, developers go where the people are. Each side strengthens the other, and a utility has no second side' },
+            { k: '6. Trust and switching', v: 'One sign-in, one payment, one permission system. Each new app is a new risk and a new effort, and that slows leaving' },
+        ] },
+        { t: 'ladder', title: 'How a utility becomes an environment, on the example of Telegram', steps: [
+            'Function: fast private messages',
+            'Lock-in: groups and channels, people stay where their contacts are',
+            'Primitives: account, Stars payment, notifications',
+            'Platform: bots and mini apps, outside developers add functions',
+        ] },
+        { t: 'p', text: 'Telegram is a good example here in substance: it began as a function (messages), and then primitives and a platform grew around it. Duolingo follows the same path on a small scale: the streak, leagues and characters create a shared environment, and the S-1 directly describes expansion beyond languages, for example Duolingo ABC.', src: ['S15', 'S1'] },
+        { t: 'warn', title: 'Where the law does not work', text: 'The word "always" is too strong. I did not look for exceptions in the sources, so I describe the law as a powerful tendency, not an absolute. A stand-alone utility can win if the platform cannot repeat it or if the utility quickly builds an environment around itself. This chapter has no confirmed examples of exceptions; they still have to be found and checked.' },
+        { t: 'card', icon: 'chat', title: 'AI: a hypothesis, not a fact', label: 'OUR ANALYSIS', rows: [
+            { k: 'Logic', v: 'If the assistant becomes the place where intent begins, it takes point 4. Launching apps inside ChatGPT is a step in that direction' },
+            { k: 'What will decide the outcome', v: 'Who gets a person\'s daily habit, the shared primitives (memory, payment, sign-in) and outside developers' },
+            { k: 'What we do not know', v: 'Who exactly will win. This is a hypothesis, and you cannot forecast a winner from one launch' },
+        ], src: ['S18'] },
+        { t: 'card', icon: 'stone', title: 'Law of the environment (candidate for the carved laws)', label: 'FOR THE FINAL SECTION', rows: [
+            { k: 'Wording', v: 'The winner is not the best function but the place where a person already lives and from which he starts the next action' },
+            { k: 'For our book', v: 'The reader is a function. The environment: the skill path, the atlas, my notes, shared cards, authors and monthly chapters around one habit' },
+        ] },
+    ] },
+];
+
+export const DUOLINGO_EN: Chapter = {
+    ...DUOLINGO,
+    title: 'Duolingo: how an owl taught the world to come back every day',
+    sub: 'From free education to an empire of habit. Only facts with sources, and a first-principles breakdown.',
+    eyebrow: 'REFERENCE CHAPTER',
+    parts: PARTS,
+    sources: DUOLINGO.sources.map(s => ({ ...s, kind: KIND[s.kind] ?? s.kind, title: TITLE[s.id] ?? s.title })),
+};
