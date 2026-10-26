@@ -329,7 +329,7 @@ function Reader({ ch: chRu, onBack }: { ch: Chapter; onBack: () => void }) {
             <section className="pb-part"><h2>{t('Источники','Sources')}</h2><ol className="pb-src">{SOURCES.map(z => <li key={z.id}><b>{z.id}</b> {z.title} <i>({z.kind})</i><br /><span>{z.url}</span></li>)}</ol></section>
             <div className="blessed">Blessed by &lt;O&gt;</div>
         </div>
-        {share !== null && <ShareSheet quote={share} source={(() => { const a = ch.company, b2 = ch.title.split(':')[0].trim(); return a === b2 ? a : a + ' · ' + b2; })()} lang={lang} onClose={() => setShare(null)} />}
+        {share !== null && <ShareSheet quote={share} source={(() => { const a = ch.company, b2 = ch.title.split(':')[0].trim(); return a === b2 ? a : a + ' · ' + b2; })()} lang={lang} whole={ch.title + '. ' + ch.sub} onClose={() => setShare(null)} />}
         {boom && <Confetti />}
         {toast && <div className="toast" role="status">{toast}</div>}
 

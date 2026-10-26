@@ -50,7 +50,7 @@ export async function renderCard(caption: string, quote: string, source: string)
     return cv;
 }
 
-export function ShareSheet({ quote, source, lang, onClose }: { quote: string; source: string; lang: 'ru' | 'en'; onClose: () => void }) {
+export function ShareSheet({ quote, source, lang, onClose, whole }: { quote: string; source: string; lang: 'ru' | 'en'; onClose: () => void; whole?: string }) {
     const caps = lang === 'en' ? CAPS_EN : CAPS_RU;
     const [idx, setIdx] = useState(0);
     const [cap, setCap] = useState(caps[0]);
@@ -58,9 +58,11 @@ export function ShareSheet({ quote, source, lang, onClose }: { quote: string; so
     const [msg, setMsg] = useState('');
     const [editQ, setEditQ] = useState(false);
     const [q, setQ] = useState(quote);
+    const [full, setFull] = useState(false);
+    const shown = full && whole ? whole : q;
     const cvRef = useRef<HTMLCanvasElement | null>(null);
     const t = (ru: string, en: string) => (lang === 'en' ? en : ru);
-    useEffect(() => { let alive = true; const h = setTimeout(async () => { const cv = await renderCard(cap, q, source); if (!alive) return; cvRef.current = cv; setImg(cv.toDataURL('image/png')); }, 120); return () => { alive = false; clearTimeout(h); }; }, [cap, q, source]);
+    useEffect(() => { let alive = true; const h = setTimeout(async () => { const cv = await renderCard(cap, shown, source); if (!alive) return; cvRef.current = cv; setImg(cv.toDataURL('image/png')); }, 120); return () => { alive = false; clearTimeout(h); }; }, [cap, shown, source]);
     const go = (d: number) => { const n = (idx + d + caps.length) % caps.length; setIdx(n); setCap(caps[n]); };
     const blob = () => new Promise<Blob | null>(r => cvRef.current ? cvRef.current.toBlob(r, 'image/png') : r(null));
     const text = cap + ' ' + 'https://' + URL_BOOK;
@@ -92,6 +94,7 @@ export function ShareSheet({ quote, source, lang, onClose }: { quote: string; so
                 <button onClick={save}><b>↓</b>{t('Сохранить', 'Save image')}</button>
                 <button onClick={copy}><b>⧉</b>{t('Копировать', 'Copy')}</button>
             </div>
+            {whole && <div className="share-row"><button onClick={() => setFull(false)} style={{ opacity: full ? .6 : 1 }}>{t('Цитата', 'Quote')}</button><button onClick={() => setFull(true)} style={{ opacity: full ? 1 : .6 }}>{t('Вся глава', 'Whole chapter')}</button></div>}
             <button className="linkbtn" onClick={() => setEditQ(!editQ)}>{t('Изменить цитату', 'Edit quote')}</button>
             {editQ && <textarea className="share-q" value={q} onChange={e => setQ(e.target.value)} rows={5} />}
             {msg && <div className="note-s">{msg}</div>}
