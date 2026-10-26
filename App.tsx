@@ -210,6 +210,7 @@ function Reader({ ch: chRu, onBack }: { ch: Chapter; onBack: () => void }) {
                     <div className="bar-l">{t('Прочитано частей','Parts read')}: {doneN} {t('из','of')} {total}</div>
                     <button className="cta" onClick={() => { setPart(Math.max(current, 0)); setTab('read'); }}>{doneN === 0 ? t('Начать','Start') : doneN === total ? t('Перечитать','Read again') : t('Продолжить','Continue')}</button>
                     <button className="linkbtn" onClick={() => setSheet('sources')}>{t('Источники главы','Chapter sources')} ({SOURCES.length})</button>
+                    <button className="linkbtn" onClick={() => window.print()}>{t('Сохранить главу в PDF','Save chapter as PDF')}</button>
                 </div>
                 <ol className="toc">
                     {PARTS.map((x, i) => <li key={x.id} className={(p.done.includes(x.id) ? 'done ' : '') + (i === current ? 'cur' : '')}>
@@ -317,6 +318,13 @@ function Reader({ ch: chRu, onBack }: { ch: Chapter; onBack: () => void }) {
             {([['path', t('Оглавление','Contents'), 'toc'], ['read', t('Читать','Read'), 'open'], ['notes', t('Заметки','Notes'), 'quill']] as const).map(([k, l, ic]) =>
                 <button key={k} className={tab === k ? 'on' : ''} onClick={() => setTab(k)}><Icon name={ic} /><span>{l}</span></button>)}
         </nav>
+        <div className="print-book" aria-hidden="true">
+            <div className="pb-cover"><div className="pb-brand">DreamPlaybook</div><h1>{ch.title}</h1><p>{ch.sub}</p><div className="pb-yr">{ch.company} · {ch.year}</div></div>
+            {PARTS.map(x => <section className="pb-part" key={x.id}><div className="eyebrow">{t('ЧАСТЬ','PART')} {x.n} · {x.kicker.toUpperCase()}</div><h2>{x.title}</h2>
+                {x.blocks.map((b, i) => <BlockView key={x.id + i} b={b} id={'pr-' + x.id + '-' + i} hl={false} toggle={() => {}} onSrc={() => {}} />)}</section>)}
+            <section className="pb-part"><h2>{t('Источники','Sources')}</h2><ol className="pb-src">{SOURCES.map(z => <li key={z.id}><b>{z.id}</b> {z.title} <i>({z.kind})</i><br /><span>{z.url}</span></li>)}</ol></section>
+            <div className="blessed">Blessed by &lt;O&gt;</div>
+        </div>
         {boom && <Confetti />}
         {toast && <div className="toast" role="status">{toast}</div>}
 
@@ -336,7 +344,8 @@ function Reader({ ch: chRu, onBack }: { ch: Chapter; onBack: () => void }) {
                     <div className="set-l">{t('Яркость','Brightness')}: {p.bright}%</div>
                     <input type="range" min={50} max={110} value={p.bright} onChange={e => upd(x => ({ ...x, bright: Number(e.target.value) }))} />
                     <div className="note-s">{saved.message}</div>
-                    <button className="cta" onClick={() => setSheet('')}>{t('Готово','Done')}</button>
+                    <button className="cta" onClick={() => { setSheet(''); setTimeout(() => window.print(), 250); }}>{t('Сохранить главу в PDF','Save chapter as PDF')}</button>
+                    <button className="ghost wide" onClick={() => setSheet('')}>{t('Готово','Done')}</button>
                 </> : <>
                     <div className="sheet-t">{t('Источники главы','Chapter sources')}</div>
                     <div className="src-list">{SOURCES.map(s => <div className="src" key={s.id}><b>{s.id}</b><div><a href={s.url} target="_blank" rel="noopener noreferrer">{s.title}</a><small>{s.kind}</small></div></div>)}</div>
