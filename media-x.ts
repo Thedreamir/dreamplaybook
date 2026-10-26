@@ -87,5 +87,45 @@ export const MEDIA_X: Record<string, Med[]> = {
    "capRu": "Русская версия WhatsApp, скриншот 2018 года. Автор файла: WhatsApp, по данным Commons общественное достояние.",
    "capEn": "Russian version of WhatsApp, 2018 screenshot. File author: WhatsApp, public domain per Commons."
   }
+ ],
+ "characterai": [
+  {
+   "file": "/img/characterai2-p.jpg",
+   "url": "https://commons.wikimedia.org/wiki/File:Wittgenstein_dialogue_at_character.ai.png",
+   "altRu": "Диалог в Character.AI",
+   "altEn": "A conversation on Character.AI",
+   "capRu": "Диалог с персонажем в Character.AI (ответ сгенерирован ИИ). Загрузил: Guest dialogue, 2023, общественное достояние по Commons.",
+   "capEn": "A conversation with a character on Character.AI (AI-generated reply). Uploaded by Guest dialogue, 2023, public domain per Commons."
+  }
+ ],
+ "kaspi": [
+  {
+   "file": "/img/kaspi2-p.jpg",
+   "url": "https://commons.wikimedia.org/wiki/File:Kaspi_Postomat,_Astana_(P1190696).jpg",
+   "altRu": "Постамат Kaspi в Астане",
+   "altEn": "Kaspi parcel locker in Astana",
+   "capRu": "Постамат Kaspi в Астане. Фото: Matti Blume, 2024, лицензия CC BY-SA 4.0.",
+   "capEn": "A Kaspi parcel locker in Astana. Photo: Matti Blume, 2024, CC BY-SA 4.0."
+  }
+ ],
+ "airbnb": [
+  {
+   "file": "/img/airbnb2-p.jpg",
+   "url": "https://commons.wikimedia.org/wiki/File:Airbnb_HQ_(39902444911).jpg",
+   "altRu": "Штаб-квартира Airbnb",
+   "altEn": "Airbnb headquarters",
+   "capRu": "Штаб-квартира Airbnb в Сан-Франциско. Фото: Steve Jurvetson, 2018, лицензия CC BY 2.0.",
+   "capEn": "Airbnb headquarters in San Francisco. Photo: Steve Jurvetson, 2018, CC BY 2.0."
+  }
+ ],
+ "uber": [
+  {
+   "file": "/img/uber2-p.jpg",
+   "url": "https://commons.wikimedia.org/wiki/File:Uber_offices,_Mission_Bay_(July_2020)_-1.jpg",
+   "altRu": "Офис Uber в Сан-Франциско",
+   "altEn": "Uber offices in San Francisco",
+   "capRu": "Офис Uber в районе Mission Bay, Сан-Франциско. Фото: HaeB, 2020, лицензия CC BY-SA 4.0.",
+   "capEn": "Uber offices in Mission Bay, San Francisco. Photo: HaeB, 2020, CC BY-SA 4.0."
+  }
  ]
 };
