@@ -16,4 +16,5 @@ import { UBER_EN } from './en-uber';
 import { STRIPE_EN } from './en-stripe';
 import { DROPBOX_EN } from './en-dropbox';
 import { NOTION_EN } from './en-notion';
-export const EN: Record<string, Chapter> = { duolingo: DUOLINGO_EN, apple: APPLE_EN, airbnb: AIRBNB_EN, uber: UBER_EN, stripe: STRIPE_EN, dropbox: DROPBOX_EN, notion: NOTION_EN };
+import { FIGMA_EN } from './en-figma';
+export const EN: Record<string, Chapter> = { duolingo: DUOLINGO_EN, apple: APPLE_EN, airbnb: AIRBNB_EN, uber: UBER_EN, stripe: STRIPE_EN, dropbox: DROPBOX_EN, notion: NOTION_EN, figma: FIGMA_EN };
