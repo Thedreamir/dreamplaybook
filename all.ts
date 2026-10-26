@@ -41,6 +41,25 @@ const addNews = (c: Chapter | undefined, en: boolean) => {
     const picks = c.sources.filter(s => NEWS.test(s.kind) && /^https?:/.test(s.url) && !seen.has(s.url) && seen.add(s.url)).slice(0, 3);
     picks.forEach(s => blocks.push({ t: 'link', title: s.title, note: s.kind + ' · ' + s.url.replace(/^https?:\/\/(www\.)?/, '').split('/')[0], url: s.url }));
 };
+const YR = /\b(1[5-9]\d\d|20\d\d)\b/;
+const addTimeline = (c: Chapter | undefined, en: boolean) => {
+    if (!c || c.id === 'atlas' || c.id === 'zakon' || c.id === 'laws') return;
+    const last = c.parts[c.parts.length - 1]?.blocks;
+    if (!last || last.some(b => b.t === 'card' && b.label === (en ? 'TIMELINE' : 'ХРОНОЛОГИЯ'))) return;
+    const rows: { y: number; k: string; v: string }[] = [];
+    const seen = new Set<string>();
+    c.parts.forEach(p => p.blocks.forEach(b => {
+        if (b.t !== 'fact') return;
+        const m = YR.exec(b.label);
+        if (!m || seen.has(b.label + b.value)) return;
+        seen.add(b.label + b.value);
+        rows.push({ y: parseInt(m[1], 10), k: b.label, v: b.value });
+    }));
+    if (rows.length < 3) return;
+    rows.sort((a, b) => a.y - b.y);
+    last.push({ t: 'card', icon: 'stone', title: en ? 'Timeline from this chapter' : 'Хронология из этой главы', label: en ? 'TIMELINE' : 'ХРОНОЛОГИЯ', rows: rows.slice(0, 10).map(r => ({ k: r.k, v: r.v })) });
+};
+BASE.forEach(c => { addTimeline(c, false); addTimeline(EN[c.id], true); });
 BASE.forEach(c => { addNews(c, false); addNews(EN[c.id], true); });
 BASE.forEach(c => { addVideo(c, false); addVideo(EN[c.id], true); });
 BASE.forEach(c => { addExtra(c, false); addExtra(EN[c.id], true); });
