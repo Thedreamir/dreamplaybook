@@ -28,4 +28,5 @@ import { TINDER_EN } from './ch-tinder';
 import { SPOTIFY_EN } from './ch-spotify';
 import { ROBLOX_EN } from './ch-roblox';
 import { MINECRAFT_EN } from './ch-minecraft';
-export const EN: Record<string, Chapter> = { duolingo: DUOLINGO_EN, apple: APPLE_EN, airbnb: AIRBNB_EN, uber: UBER_EN, stripe: STRIPE_EN, dropbox: DROPBOX_EN, notion: NOTION_EN, figma: FIGMA_EN, canva: CANVA_EN, shopify: SHOPIFY_EN, telegram: TELEGRAM_EN, whatsapp: WHATSAPP_EN, instagram: INSTAGRAM_EN, tiktok: TIKTOK_EN, discord: DISCORD_EN, tinder: TINDER_EN, spotify: SPOTIFY_EN, roblox: ROBLOX_EN, minecraft: MINECRAFT_EN };
+import { OPENAI_EN } from './ch-openai';
+export const EN: Record<string, Chapter> = { duolingo: DUOLINGO_EN, apple: APPLE_EN, airbnb: AIRBNB_EN, uber: UBER_EN, stripe: STRIPE_EN, dropbox: DROPBOX_EN, notion: NOTION_EN, figma: FIGMA_EN, canva: CANVA_EN, shopify: SHOPIFY_EN, telegram: TELEGRAM_EN, whatsapp: WHATSAPP_EN, instagram: INSTAGRAM_EN, tiktok: TIKTOK_EN, discord: DISCORD_EN, tinder: TINDER_EN, spotify: SPOTIFY_EN, roblox: ROBLOX_EN, minecraft: MINECRAFT_EN, openai: OPENAI_EN };

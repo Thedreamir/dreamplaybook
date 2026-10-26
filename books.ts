@@ -18,5 +18,6 @@ import { TINDER } from './ch-tinder';
 import { SPOTIFY } from './ch-spotify';
 import { ROBLOX } from './ch-roblox';
 import { MINECRAFT } from './ch-minecraft';
+import { OPENAI } from './ch-openai';
 
-export const CHAPTERS: Chapter[] = [DUOLINGO, APPLE, AIRBNB, UBER, STRIPE, DROPBOX, NOTION, FIGMA, CANVA, SHOPIFY, TELEGRAM, WHATSAPP, INSTAGRAM, TIKTOK, DISCORD, TINDER, SPOTIFY, ROBLOX, MINECRAFT];
+export const CHAPTERS: Chapter[] = [DUOLINGO, APPLE, AIRBNB, UBER, STRIPE, DROPBOX, NOTION, FIGMA, CANVA, SHOPIFY, TELEGRAM, WHATSAPP, INSTAGRAM, TIKTOK, DISCORD, TINDER, SPOTIFY, ROBLOX, MINECRAFT, OPENAI];
