@@ -12,9 +12,12 @@ const clipHalf = (poly: P[], n: P, c: number, keepLE: boolean): P[] => {
     return out;
 };
 const pts = (poly: P[]) => poly.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
-const ease = (t: number) => -(Math.cos(Math.PI * t) - 1) / 2;
+const ease = (t: number) => t * t * t * (t * (t * 6 - 15) + 10);
 
 export function pageCurl(app: HTMLElement, reader: HTMLElement, host: HTMLElement, dir: 'next' | 'prev', swap: () => void, done: () => void) {
+    const nav = navigator as Navigator & { deviceMemory?: number };
+    const weak = (nav.hardwareConcurrency ?? 8) <= 4 || (nav.deviceMemory ?? 8) <= 4 || reader.scrollHeight > 9000;
+    if (weak || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { swap(); reader.animate([{ opacity: 0, transform: 'translateX(' + (dir === 'next' ? 24 : -24) + 'px)' }, { opacity: 1, transform: 'none' }], { duration: 320, easing: 'ease-out' }); setTimeout(done, 340); return; }
     const hr = host.getBoundingClientRect();
     const rr = reader.getBoundingClientRect();
     const W = hr.width, H = hr.height;
@@ -22,15 +25,16 @@ export function pageCurl(app: HTMLElement, reader: HTMLElement, host: HTMLElemen
     const ov = document.createElement('div');
     ov.style.cssText = `position:fixed;left:${hr.left}px;top:${hr.top}px;width:${W}px;height:${H}px;overflow:hidden;z-index:70;pointer-events:none`;
     const clone = reader.cloneNode(true) as HTMLElement;
+    clone.querySelectorAll('img,iframe,video,svg').forEach(e => e.remove());
     clone.classList.remove('turn-out-next');
-    clone.style.cssText += `;position:absolute;left:${rr.left - hr.left}px;top:${rr.top - hr.top}px;width:${rr.width}px;margin:0;animation:none`;
-    clone.querySelectorAll('*').forEach(e => ((e as HTMLElement).style.animation = 'none'));
+    clone.style.cssText += `;position:absolute;left:${rr.left - hr.left}px;top:${rr.top - hr.top}px;width:${rr.width}px;margin:0;animation:none;max-height:${Math.max(200, H - (rr.top - hr.top))}px;overflow:hidden`;
+    
     const holder = document.createElement('div');
-    holder.style.cssText = 'position:absolute;inset:0';
+    holder.style.cssText = 'position:absolute;inset:0;contain:strict;will-change:clip-path';
     holder.appendChild(clone);
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('width', String(W)); svg.setAttribute('height', String(H));
-    svg.style.cssText = 'position:absolute;inset:0;overflow:visible;filter:drop-shadow(-6px -4px 10px rgba(0,0,0,.35))';
+    svg.style.cssText = 'position:absolute;inset:0;overflow:visible';
     svg.innerHTML = `<defs>
       <linearGradient id="pcg" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#cbb98e"/><stop offset=".12" stop-color="#fbf3de"/><stop offset=".6" stop-color="#fffdf5"/><stop offset="1" stop-color="#e9dcbd"/></linearGradient>
       <linearGradient id="pcs" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="rgba(0,0,0,.42)"/><stop offset="1" stop-color="rgba(0,0,0,0)"/></linearGradient></defs>
@@ -45,10 +49,11 @@ export function pageCurl(app: HTMLElement, reader: HTMLElement, host: HTMLElemen
     const rect: P[] = [[0, 0], [W, 0], [W, H], [0, H]];
     const dMax = Math.max(...rect.map(p => n[0] * (p[0] - corner[0]) + n[1] * (p[1] - corner[1]))) + 12;
     const nc = n[0] * corner[0] + n[1] * corner[1];
-    const dur = reduce ? 1 : 1100; const t0 = performance.now();
+    const dur = 1900; const t0 = performance.now();
     const shEl = svg.querySelector('#pcsh') as SVGPolygonElement, flEl = svg.querySelector('#pcf') as SVGPolygonElement;
     const g1 = svg.querySelector('#pcg') as SVGLinearGradientElement, g2 = svg.querySelector('#pcs') as SVGLinearGradientElement;
     const frame = (now: number) => {
+        if (fin) return;
         const t = Math.min(1, (now - t0) / dur); const d = ease(t) * dMax; const c = nc + d;
         const old = clipHalf(rect, n, c, false); // old page remains beyond the fold
         holder.style.clipPath = old.length > 2 ? `polygon(${old.map(p => p[0] + 'px ' + p[1] + 'px').join(',')})` : 'polygon(0 0,0 0,0 0)';
@@ -66,7 +71,9 @@ export function pageCurl(app: HTMLElement, reader: HTMLElement, host: HTMLElemen
         shEl.setAttribute('points', band.length > 2 && d > 0.5 ? pts(band) : '');
         g2.setAttribute('x1', String(base[0])); g2.setAttribute('y1', String(base[1]));
         g2.setAttribute('x2', String(base[0] + gx * 46)); g2.setAttribute('y2', String(base[1] + gy * 46));
-        if (t < 1) requestAnimationFrame(frame); else { ov.remove(); done(); }
+        if (t < 1) requestAnimationFrame(frame); else finish();
     };
+    let fin = false; const finish = () => { if (fin) return; fin = true; ov.remove(); done(); };
+    setTimeout(finish, dur + 500);
     requestAnimationFrame(frame);
 }
