@@ -44,7 +44,8 @@ const addNews = (c: Chapter | undefined, en: boolean) => {
 const METRIC = /(выручк|оборот|структур|активн|продаж|бронирован|поездк|ночей|GMV|GBV|прибыл|подписчик|пользовател|капитализац|валов|revenue|turnover|active|sales|bookings|trips|nights|profit|subscribers|users|market cap|gross)/i;
 const EVENT = /(основан|запущ|запуск|привлёк|привлек|вышел|выпустил|продан|продал|купил|покупк|объявил|отказал|уехал|выиграл|пришёл|торгов|раунд|IPO|founded|launch|raised|released|sold|acquired|acquisition|announced|abandoned|left|won|joined|trading|round)/i;
 const DROP_LABEL = /(масштаб|структур|за \d{4} год|scale|structure|for \d{4}|в 20\d\d$)/i;
-const isEvent = (k: string, v: string) => !DROP_LABEL.test(k) && !(METRIC.test(k + ' ' + v) && !EVENT.test(k + ' ' + v));
+const DROP_TEXT = /(годов(ому|ого|ой) (письму|отчёт\w*)|по состоянию на|не опираемся|не проверили|annual (letter|report)|as of|not verified|do not rely)/i;
+const isEvent = (k: string, v: string) => !DROP_LABEL.test(k) && !DROP_TEXT.test(k + ' ' + v) && !(METRIC.test(k + ' ' + v) && !EVENT.test(k + ' ' + v));
 const YR = /\b(1[5-9]\d\d|20\d\d)\b/;
 const addTimeline = (c: Chapter | undefined, en: boolean) => {
     if (!c || c.id === 'atlas' || c.id === 'zakon' || c.id === 'laws') return;
