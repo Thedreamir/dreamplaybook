@@ -443,3 +443,19 @@ button:active:not(:disabled){transform:scale(.965);filter:brightness(.94)}
  .print-book{position:static!important;overflow:visible!important}
  .print-book .eyebrow{color:#8a5a1f}
 }
+.para,.fact{position:relative}
+.sharebtn{float:right;margin:2px 0 0 8px;width:30px;height:30px;border-radius:50%;border:1px solid rgba(110,75,30,.35);background:linear-gradient(#fbf3df,#e6d6b3);color:#7a4a14;font:700 15px var(--f-sys);line-height:1;box-shadow:0 1px 0 rgba(255,255,255,.7) inset,0 1px 3px rgba(0,0,0,.25);cursor:pointer}
+@media print{.sharebtn{display:none}}
+.sheet.share{background:#fbf5e6;color:#2a1c0c;max-height:92vh;overflow:auto}
+.share-top{display:flex;align-items:center;justify-content:space-between}
+.share .x{width:36px;height:36px;border-radius:50%;border:1px solid rgba(110,75,30,.35);background:#fff;font-size:22px;line-height:1;cursor:pointer}
+.share-img{margin:10px auto;max-width:300px;border-radius:14px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.35);background:#14100b;min-height:200px}
+.share-img img{display:block;width:100%;height:auto}.share-wait{padding:90px;text-align:center;color:#c9a15a}
+.share-cap{display:flex;align-items:center;gap:6px;margin-top:8px}
+.share-cap input{flex:1;font:700 18px var(--f-head,Georgia,serif);text-align:center;border:0;border-bottom:2px solid #a07a3a;background:transparent;padding:6px 4px;color:#2a1c0c}
+.share .arr{font-size:28px;background:none;border:0;color:#8a5a1f;cursor:pointer;padding:0 8px}
+.share-hint{text-align:center;font:500 12px var(--f-sys);opacity:.65;margin:6px 0 10px}
+.share-row{display:flex;gap:8px;justify-content:space-between;margin:6px 0}
+.share-row>*{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font:600 11px var(--f-sys);color:#2a1c0c;text-decoration:none;background:none;border:0;cursor:pointer}
+.share-row b{display:flex;width:48px;height:48px;border-radius:12px;align-items:center;justify-content:center;font-size:20px;background:linear-gradient(#fff,#e9dcc0);border:1px solid rgba(110,75,30,.3);box-shadow:0 1px 0 #fff inset,0 2px 4px rgba(0,0,0,.2)}
+.share-q{width:100%;margin-top:8px;border:1px solid #a07a3a;border-radius:8px;padding:8px;font:15px var(--f-read,Georgia,serif);background:#fffdf5;color:#2a1c0c}

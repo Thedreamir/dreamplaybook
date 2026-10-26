@@ -4,6 +4,7 @@ import './style.css';
 import { CHAPTERS } from './books';
 import type { Block, Chapter } from './types';
 import { pageCurl } from './curl';
+import { ShareSheet } from './share';
 import { useLang, setLang, EN } from './i18n';
 const L = (l: string, ru: string, en: string) => (l === 'en' ? en : ru);
 
@@ -91,9 +92,10 @@ function Rich({ text }: { text: string }) {
     const parts = text.split(KW);
     return <>{parts.map((t, i) => i % 2 ? <mark key={i} className="kw">{t}</mark> : t)}</>;
 }
-function BlockView({ b, id, hl, toggle, onSrc }: { b: Block; id: string; hl: boolean; toggle: () => void; onSrc: () => void }) {
-    if (b.t === 'p') return <p className={'para' + (hl ? ' is-hl' : '')} onClick={toggle} data-id={id}><Rich text={b.text} /> <Sup src={b.src} onSrc={onSrc} /></p>;
-    if (b.t === 'fact') return <div className={'fact glass' + (hl ? ' is-hl' : '')} onClick={toggle}><span className="fact-l">{b.label}</span><span className="fact-v">{b.value} <Sup src={b.src} onSrc={onSrc} /></span></div>;
+function BlockView({ b, id, hl, toggle, onSrc, onShare }: { b: Block; id: string; hl: boolean; toggle: () => void; onSrc: () => void; onShare?: (q: string) => void }) {
+    const sh = (q: string) => onShare ? <button className="sharebtn" aria-label="Share" onClick={e => { e.stopPropagation(); onShare(q); }}>↗</button> : null;
+    if (b.t === 'p') return <p className={'para' + (hl ? ' is-hl' : '')} onClick={toggle} data-id={id}><Rich text={b.text} /> <Sup src={b.src} onSrc={onSrc} />{sh(b.text)}</p>;
+    if (b.t === 'fact') return <div className={'fact glass' + (hl ? ' is-hl' : '')} onClick={toggle}><span className="fact-l">{b.label}</span><span className="fact-v">{b.value} <Sup src={b.src} onSrc={onSrc} /></span>{sh(b.label + ': ' + b.value)}</div>;
     if (b.t === 'gap') return <div className="gap"><b>Не нашёл.</b> {b.text.replace(/^Не нашёл: /, '')}</div>;
     if (b.t === 'img') return <figure className="fig"><img src={b.file} alt={b.alt} loading="lazy" /><figcaption>{b.caption} <a href={b.url || '#'} target="_blank" rel="noreferrer">{b.credit}</a></figcaption></figure>;
     if (b.t === 'stickers') return <div className="stickers">{b.items.map((s, i) => <div key={i} className={'sticker t' + (i % 4)}><div><b>{s.big}</b><small>{s.small}</small></div></div>)}</div>;
@@ -117,6 +119,7 @@ function Reader({ ch: chRu, onBack }: { ch: Chapter; onBack: () => void }) {
     const [sheet, setSheet] = useState<'' | 'settings' | 'sources'>('');
     const [boom, setBoom] = useState(false);
     const [toast, setToast] = useState('');
+    const [share, setShare] = useState<string | null>(null);
     const [speaking, setSpeaking] = useState(false);
     const [chat, setChat] = useState<{ me: boolean; text: string; src?: string[]; part?: string }[]>([{ me: false, text: 'Я бадди этой главы. Отвечаю только тем, что есть в материале, с указанием источника. Выбери вопрос или напиши свой.' }]);
     const [q, setQ] = useState('');
@@ -236,7 +239,7 @@ function Reader({ ch: chRu, onBack }: { ch: Chapter; onBack: () => void }) {
                 <div className="eyebrow">{t('ЧАСТЬ','PART')} {pt.n} · {pt.kicker.toUpperCase()}</div>
                 <h2>{pt.title}</h2>
                 <p className="hint">{t('Нажми на абзац, чтобы сохранить мысль.','Tap a paragraph to save it.')}</p>
-                {pt.blocks.map((b, i) => <BlockView key={pt.id + i} b={b} id={pt.id + '-' + i} hl={p.hl.includes(pt.id + '-' + i)} toggle={() => toggleHl(pt.id + '-' + i)} onSrc={() => setSheet('sources')} />)}
+                {pt.blocks.map((b, i) => <BlockView key={pt.id + i} b={b} id={pt.id + '-' + i} hl={p.hl.includes(pt.id + '-' + i)} toggle={() => toggleHl(pt.id + '-' + i)} onSrc={() => setSheet('sources')} onShare={setShare} />)}
                 <div className="r-nav">
                     <button className="linkbtn" onClick={() => setSheet('sources')}>{t('Источники главы','Chapter sources')}</button>
                     <button className="cta" onClick={() => finish(pt)}>{p.done.includes(pt.id) ? t('Часть прочитана','Part read') : t('Отметить прочитанным','Mark as read')}</button>
@@ -325,6 +328,7 @@ function Reader({ ch: chRu, onBack }: { ch: Chapter; onBack: () => void }) {
             <section className="pb-part"><h2>{t('Источники','Sources')}</h2><ol className="pb-src">{SOURCES.map(z => <li key={z.id}><b>{z.id}</b> {z.title} <i>({z.kind})</i><br /><span>{z.url}</span></li>)}</ol></section>
             <div className="blessed">Blessed by &lt;O&gt;</div>
         </div>
+        {share !== null && <ShareSheet quote={share} source={ch.company + ' · ' + ch.title.split(':')[0]} lang={lang} onClose={() => setShare(null)} />}
         {boom && <Confetti />}
         {toast && <div className="toast" role="status">{toast}</div>}
 
