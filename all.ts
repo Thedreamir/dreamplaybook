@@ -78,6 +78,8 @@ const addTimeline = (c: Chapter | undefined, en: boolean) => {
         }));
         if (rows.length < 3) return;
     }
+    const DROPY: Record<string, number> = { stripe: 2025, notion: 2013, canva: 2016, shopify: 2010, apple: 1980 };
+    if (DROPY[c.id]) { const keep = rows.filter(r => r.y !== DROPY[c.id]); if (keep.length >= 3) { rows.length = 0; rows.push(...keep); } }
     rows.sort((a, b) => a.y - b.y);
     last.push({ t: 'card', icon: 'stone', title: en ? 'Timeline from this chapter' : 'Хронология из этой главы', label: en ? 'TIMELINE' : 'ХРОНОЛОГИЯ', rows: rows.slice(0, 10).map(r => ({ k: r.k, v: r.v })) });
 };
