@@ -14,10 +14,11 @@ const clipHalf = (poly: P[], n: P, c: number, keepLE: boolean): P[] => {
 const pts = (poly: P[]) => poly.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
 const ease = (t: number) => t * t * t * (t * (t * 6 - 15) + 10);
 
+export const SIMPLE_FOR_ALL = true; // flip to true to ship the soft page change without the curl
 export function pageCurl(app: HTMLElement, reader: HTMLElement, host: HTMLElement, dir: 'next' | 'prev', swap: () => void, done: () => void) {
     const nav = navigator as Navigator & { deviceMemory?: number };
-    const weak = (nav.hardwareConcurrency ?? 8) <= 4 || (nav.deviceMemory ?? 8) <= 4 || reader.scrollHeight > 9000;
-    if (weak || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { swap(); reader.animate([{ opacity: 0, transform: 'translateX(' + (dir === 'next' ? 24 : -24) + 'px)' }, { opacity: 1, transform: 'none' }], { duration: 320, easing: 'ease-out' }); setTimeout(done, 340); return; }
+    const weak = SIMPLE_FOR_ALL || (nav.hardwareConcurrency ?? 8) <= 4 || (nav.deviceMemory ?? 8) <= 4 || reader.scrollHeight > 9000;
+    if (weak || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { swap(); reader.animate([{ opacity: 0, transform: 'translateX(' + (dir === 'next' ? 24 : -24) + 'px)' }, { opacity: 1, transform: 'none' }], { duration: 420, easing: 'cubic-bezier(.2,.7,.3,1)' }); setTimeout(done, 440); return; }
     const hr = host.getBoundingClientRect();
     const rr = reader.getBoundingClientRect();
     const W = hr.width, H = hr.height;
