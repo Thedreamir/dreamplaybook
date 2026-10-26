@@ -32,4 +32,5 @@ import { OPENAI_EN } from './ch-openai';
 import { CHARACTERAI_EN } from './ch-characterai';
 import { REVOLUT_EN } from './ch-revolut';
 import { KASPI_EN } from './ch-kaspi';
-export const EN: Record<string, Chapter> = { duolingo: DUOLINGO_EN, apple: APPLE_EN, airbnb: AIRBNB_EN, uber: UBER_EN, stripe: STRIPE_EN, dropbox: DROPBOX_EN, notion: NOTION_EN, figma: FIGMA_EN, canva: CANVA_EN, shopify: SHOPIFY_EN, telegram: TELEGRAM_EN, whatsapp: WHATSAPP_EN, instagram: INSTAGRAM_EN, tiktok: TIKTOK_EN, discord: DISCORD_EN, tinder: TINDER_EN, spotify: SPOTIFY_EN, roblox: ROBLOX_EN, minecraft: MINECRAFT_EN, openai: OPENAI_EN, characterai: CHARACTERAI_EN, revolut: REVOLUT_EN, kaspi: KASPI_EN };
+import { SLACK_EN } from './ch-slack';
+export const EN: Record<string, Chapter> = { duolingo: DUOLINGO_EN, apple: APPLE_EN, airbnb: AIRBNB_EN, uber: UBER_EN, stripe: STRIPE_EN, dropbox: DROPBOX_EN, notion: NOTION_EN, figma: FIGMA_EN, canva: CANVA_EN, shopify: SHOPIFY_EN, telegram: TELEGRAM_EN, whatsapp: WHATSAPP_EN, instagram: INSTAGRAM_EN, tiktok: TIKTOK_EN, discord: DISCORD_EN, tinder: TINDER_EN, spotify: SPOTIFY_EN, roblox: ROBLOX_EN, minecraft: MINECRAFT_EN, openai: OPENAI_EN, characterai: CHARACTERAI_EN, revolut: REVOLUT_EN, kaspi: KASPI_EN, slack: SLACK_EN };
