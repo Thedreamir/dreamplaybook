@@ -41,6 +41,10 @@ const addNews = (c: Chapter | undefined, en: boolean) => {
     const picks = c.sources.filter(s => NEWS.test(s.kind) && /^https?:/.test(s.url) && !seen.has(s.url) && seen.add(s.url)).slice(0, 3);
     picks.forEach(s => blocks.push({ t: 'link', title: s.title, note: s.kind + ' · ' + s.url.replace(/^https?:\/\/(www\.)?/, '').split('/')[0], url: s.url }));
 };
+const METRIC = /(выручк|оборот|структур|активн|продаж|бронирован|поездк|ночей|GMV|GBV|прибыл|подписчик|пользовател|капитализац|валов|revenue|turnover|active|sales|bookings|trips|nights|profit|subscribers|users|market cap|gross)/i;
+const EVENT = /(основан|запущ|запуск|привлёк|привлек|вышел|выпустил|продан|продал|купил|покупк|объявил|отказал|уехал|выиграл|пришёл|торгов|раунд|IPO|founded|launch|raised|released|sold|acquired|acquisition|announced|abandoned|left|won|joined|trading|round)/i;
+const DROP_LABEL = /(масштаб|структур|за \d{4} год|scale|structure|for \d{4}|в 20\d\d$)/i;
+const isEvent = (k: string, v: string) => !DROP_LABEL.test(k) && !(METRIC.test(k + ' ' + v) && !EVENT.test(k + ' ' + v));
 const YR = /\b(1[5-9]\d\d|20\d\d)\b/;
 const addTimeline = (c: Chapter | undefined, en: boolean) => {
     if (!c || c.id === 'atlas' || c.id === 'zakon' || c.id === 'laws') return;
@@ -51,7 +55,7 @@ const addTimeline = (c: Chapter | undefined, en: boolean) => {
     c.parts.forEach(p => p.blocks.forEach(b => {
         if (b.t !== 'fact') return;
         const m = YR.exec(b.label);
-        if (!m || seen.has(b.label + b.value)) return;
+        if (!m || seen.has(b.label + b.value) || !isEvent(b.label, b.value)) return;
         seen.add(b.label + b.value);
         rows.push({ y: parseInt(m[1], 10), k: b.label, v: b.value });
     }));
@@ -66,7 +70,7 @@ const addTimeline = (c: Chapter | undefined, en: boolean) => {
                 const m = DT.exec(sn);
                 if (!m || sn.length < 25 || sn.length > 230 || /^\s*[\[(]?S\d/.test(sn)) return;
                 const key = m[0].trim();
-                if (seenY.has(key)) return;
+                if (seenY.has(key) || !isEvent(key, sn)) return;
                 seenY.add(key);
                 rows.push({ y: parseInt(m[2], 10), k: key, v: sn.replace(/\s*\(S\d+(,\s*S\d+)*\)/g, '').trim() });
             });
