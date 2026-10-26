@@ -13,4 +13,5 @@ import { DUOLINGO_EN } from './en-duolingo';
 import { APPLE_EN } from './en-apple';
 import { AIRBNB_EN } from './en-airbnb';
 import { UBER_EN } from './en-uber';
-export const EN: Record<string, Chapter> = { duolingo: DUOLINGO_EN, apple: APPLE_EN, airbnb: AIRBNB_EN, uber: UBER_EN };
+import { STRIPE_EN } from './en-stripe';
+export const EN: Record<string, Chapter> = { duolingo: DUOLINGO_EN, apple: APPLE_EN, airbnb: AIRBNB_EN, uber: UBER_EN, stripe: STRIPE_EN };
