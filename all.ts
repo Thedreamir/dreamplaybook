@@ -55,7 +55,24 @@ const addTimeline = (c: Chapter | undefined, en: boolean) => {
         seen.add(b.label + b.value);
         rows.push({ y: parseInt(m[1], 10), k: b.label, v: b.value });
     }));
-    if (rows.length < 3) return;
+    if (rows.length < 3) {
+        // fallback: dated sentences taken verbatim from this chapter's own paragraphs (nothing added)
+        rows.length = 0;
+        const DT = /(\d{1,2}\s+[A-Za-zА-Яа-яё]+\s+)?\b(1[5-9]\d\d|20\d\d)\b/;
+        const seenY = new Set<string>();
+        c.parts.forEach(p => p.blocks.forEach(b => {
+            if (b.t !== 'p') return;
+            b.text.split(/(?<=[.!?])\s+/).forEach(sn => {
+                const m = DT.exec(sn);
+                if (!m || sn.length < 25 || sn.length > 230 || /^\s*[\[(]?S\d/.test(sn)) return;
+                const key = m[0].trim();
+                if (seenY.has(key)) return;
+                seenY.add(key);
+                rows.push({ y: parseInt(m[2], 10), k: key, v: sn.replace(/\s*\(S\d+(,\s*S\d+)*\)/g, '').trim() });
+            });
+        }));
+        if (rows.length < 3) return;
+    }
     rows.sort((a, b) => a.y - b.y);
     last.push({ t: 'card', icon: 'stone', title: en ? 'Timeline from this chapter' : 'Хронология из этой главы', label: en ? 'TIMELINE' : 'ХРОНОЛОГИЯ', rows: rows.slice(0, 10).map(r => ({ k: r.k, v: r.v })) });
 };
