@@ -17,4 +17,5 @@ import { STRIPE_EN } from './en-stripe';
 import { DROPBOX_EN } from './en-dropbox';
 import { NOTION_EN } from './en-notion';
 import { FIGMA_EN } from './en-figma';
-export const EN: Record<string, Chapter> = { duolingo: DUOLINGO_EN, apple: APPLE_EN, airbnb: AIRBNB_EN, uber: UBER_EN, stripe: STRIPE_EN, dropbox: DROPBOX_EN, notion: NOTION_EN, figma: FIGMA_EN };
+import { CANVA_EN } from './en-canva';
+export const EN: Record<string, Chapter> = { duolingo: DUOLINGO_EN, apple: APPLE_EN, airbnb: AIRBNB_EN, uber: UBER_EN, stripe: STRIPE_EN, dropbox: DROPBOX_EN, notion: NOTION_EN, figma: FIGMA_EN, canva: CANVA_EN };
