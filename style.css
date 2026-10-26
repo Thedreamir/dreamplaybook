@@ -438,3 +438,8 @@ button:active:not(:disabled){transform:scale(.965);filter:brightness(.94)}
  .print-book .blessed{text-align:center;font-size:8pt;color:#8a5a1f;margin-top:10mm}
  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
+@media print{
+ html,body,#root,.app{height:auto!important;max-height:none!important;overflow:visible!important;position:static!important;display:block!important}
+ .print-book{position:static!important;overflow:visible!important}
+ .print-book .eyebrow{color:#8a5a1f}
+}
