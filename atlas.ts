@@ -18,9 +18,14 @@ export const atlasOf = (list: Chapter[], en: boolean): Chapter => {
             rows: [{ k: L('Глава', 'Chapter'), v: c.title }, { k: L('О чём', 'About'), v: c.sub }],
         })),
     }));
-    parts.push({ id: 'p6', n: '5', title: L('Как пользоваться атласом', 'How to use the atlas'), kicker: L('Это указатель', 'This is an index'), xp: 10, blocks: [
+    const dated = list.filter(c => /^\d{4}/.test(c.year)).sort((a, b) => parseInt(a.year, 10) - parseInt(b.year, 10) || num(a) - num(b));
+    parts.push({ id: 'pt', n: '5', title: L('Хронология по годам глав', 'Timeline by chapter year'), kicker: L('Год из карточки главы', 'The year on each chapter'), xp: 10, era: '', blocks: [
+        { t: 'p', text: L('Год здесь тот, что указан на самой главе: у компаний обычно год старта, у разборов год ключевого эпизода. Это не единая шкала событий, а порядок глав по их собственным годам.', 'The year is the one shown on each chapter: usually the start year for companies and the key episode year for breakdowns. This is not a single event scale, only the chapters ordered by their own years.') },
+        ...dated.map((c): Block => ({ t: 'fact', label: c.year, value: `${c.no} ${c.company}` })),
+    ] });
+    parts.push({ id: 'p6', n: '6', title: L('Как пользоваться атласом', 'How to use the atlas'), kicker: L('Это указатель', 'This is an index'), xp: 10, blocks: [
         { t: 'p', text: L('Атлас ничего не добавляет к фактам. Каждая карточка берёт название, год и описание из самой главы. Источники, расхождения и оговорки смотри внутри глав.', 'The atlas adds nothing to the facts. Each card takes the name, year and description from the chapter itself. See the chapters for sources, discrepancies and caveats.') },
-        { t: 'gap', text: L('Не сделано: сквозной хронологический указатель по датам событий. Мы не выводим его автоматически, чтобы не смешать годы основания и годы событий.', 'Not done: a cross-chapter timeline by event date. We do not derive it automatically so as not to mix founding years with event years.') },
+        { t: 'p', text: L('Хронология выше упорядочена по году на карточке главы. Точные даты событий внутри глав в неё не входят.', 'The timeline above is ordered by the year on each chapter. Exact event dates inside chapters are not part of it.') },
     ] });
     return {
         id: 'atlas', no: '35', company: L('Атлас', 'Atlas'), year: '', title: L('Атлас: все главы одним взглядом', 'Atlas: every chapter at a glance'),
