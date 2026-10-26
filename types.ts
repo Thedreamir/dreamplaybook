@@ -9,6 +9,7 @@ export type Block =
     | { t: 'stickers'; items: { big: string; small: string }[] }
     | { t: 'chart'; title: string; bars: { label: string; value: number; text: string }[]; note: string; src?: string[] }
     | { t: 'video'; title: string; note: string; url: string }
+    | { t: 'link'; title: string; note: string; url: string }
     | { t: 'warn'; title: string; text: string; src?: string[] };
 export type Part = { id: string; n: string; title: string; kicker: string; xp: number; era?: string; blocks: Block[] };
 

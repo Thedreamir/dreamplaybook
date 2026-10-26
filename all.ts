@@ -32,6 +32,16 @@ const addVideo = (c: Chapter | undefined, en: boolean) => {
     if (!v || !blocks || blocks.some(b => b.t === 'video')) return;
     blocks.push({ t: 'video', title: en ? v.te : v.tr, note: en ? v.ne : v.nr, url: v.url });
 };
+const NEWS = /^(Пресса|Press|Первичка|Primary|Первое лицо|First)/;
+const addNews = (c: Chapter | undefined, en: boolean) => {
+    if (!c || !c.sources) return;
+    const blocks = (c.parts[2] || c.parts[1] || c.parts[0])?.blocks;
+    if (!blocks || blocks.some(b => b.t === 'link')) return;
+    const seen = new Set<string>();
+    const picks = c.sources.filter(s => NEWS.test(s.kind) && /^https?:/.test(s.url) && !seen.has(s.url) && seen.add(s.url)).slice(0, 3);
+    picks.forEach(s => blocks.push({ t: 'link', title: s.title, note: s.kind + ' · ' + s.url.replace(/^https?:\/\/(www\.)?/, '').split('/')[0], url: s.url }));
+};
+BASE.forEach(c => { addNews(c, false); addNews(EN[c.id], true); });
 BASE.forEach(c => { addVideo(c, false); addVideo(EN[c.id], true); });
 BASE.forEach(c => { addExtra(c, false); addExtra(EN[c.id], true); });
 BASE.forEach(c => { addMedia(c, false); addMedia(EN[c.id], true); });
