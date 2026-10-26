@@ -40,6 +40,7 @@ const build = (en: boolean) => {
                 ['Синергия: связь капитала и производства восстановлена (S1)', 'Synergy: the link between capital and production is repaired (S1)'],
                 ['Зрелость: рынок насыщен, капитал ищет следующее (S1)', 'Maturity: the market is saturated, capital looks for the next thing (S1)'],
             ]),
+            { t: 'video', title: L('Карлота Перес: Bubbles, Golden Ages and Tech Revolutions', 'Carlota Perez: Bubbles, Golden Ages and Tech Revolutions'), note: L('Канал автора теории, Carlota Perez. Название и канал сверены через YouTube oEmbed, содержание не смотрел.', 'The theory author\'s own channel, Carlota Perez. Title and channel checked via YouTube oEmbed, content not watched.'), url: 'https://www.youtube.com/watch?v=scz6PaldTxg' },
             h.w('Оговорка к карте', 'Caveat to the map', 'Пять волн выделены задним числом, а на границы между фазами у историков нет единого мнения. Мы читаем Перес через Wikipedia, а не саму книгу. Это карта для вопросов, а не доказательство.', 'The five waves were drawn in hindsight, and historians have no single view on phase boundaries. We read Perez through Wikipedia, not the book itself. This is a map for asking questions, not proof.'),
         ]),
         h.part('p2', '2', 'Бум первый: железные дороги', 'Boom one: railways', 'Британия, 1846 год', 'Britain, 1846', '1830-1850s', [
@@ -80,6 +81,7 @@ const build = (en: boolean) => {
                 ['Безос (1997)', 'Bezos (1997)', 'Окно открыто, пока слоны собираются. Меряем долгосрочным лидерством, не прибылью квартала (S5).', 'The window is open while elephants gather. Measure by long-term leadership, not quarterly profit (S5).'],
                 ['Google (2004)', 'Google (2004)', 'Не стать обычной компанией (S6).', 'Do not become a conventional company (S6).'],
             ]),
+            { t: 'video', title: L('Джефф Безос в 1999 году о планах Amazon до краха доткомов', 'Jeff Bezos in 1999 on Amazon\'s plans before the dot-com crash'), note: L('Канал CNBC. Название и канал сверены через YouTube oEmbed, содержание не смотрел.', 'CNBC channel. Title and channel checked via YouTube oEmbed, content not watched.'), url: 'https://www.youtube.com/watch?v=GltlJO56S1g' },
             h.w('Читаем, что написали сами о себе', 'We read what they wrote about themselves', 'Это тексты, написанные для коллег и акционеров. Они показывают, как люди хотели, чтобы их мысли читали, а не гарантируют, что так всё и было. Результаты Amazon и Google известны, но причинность между письмом и результатом не доказана.', 'These are texts written for colleagues and shareholders. They show how people wanted their thinking to be read, not that it was exactly so. The results of Amazon and Google are known, but causality between the letter and the result is not proven.'),
         ]),
         h.part('p5', '5', 'Бум четвёртый: мобильные приложения', 'Boom four: mobile apps', 'Платформа открыла дверь', 'The platform opened the door', '2007-2017', [
